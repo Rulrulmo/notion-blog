@@ -1,7 +1,7 @@
 import { PostCard } from '@/components/features/blog/PostCard';
 import TagSection from './_components/TagSection';
 import ProfileSection from './_components/ProfileSection';
-import ContactSection from './_components/ContactSection';
+// import ContactSection from './_components/ContactSection';
 import {
   Select,
   SelectContent,
@@ -69,7 +69,7 @@ export default function Home() {
 
         <aside className="flex flex-col gap-6">
           <ProfileSection />
-          <ContactSection />
+          {/* <ContactSection /> */}
         </aside>
       </div>
     </div>
