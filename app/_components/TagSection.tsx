@@ -1,15 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+interface IProps {
+  selectedTag: string;
+  tags: TagFilterItem[];
+  totalCount: number;
+}
 
-const mockTags = [
-  { name: '전체', count: 20 },
-  { name: 'HTML', count: 10 },
-  { name: 'CSS', count: 5 },
-  { name: 'JavaScript', count: 3 },
-  { name: 'React', count: 3 },
-];
-
-export default function TagSection() {
+export default async function TagSection({ tags, selectedTag, totalCount }: IProps) {
   return (
     <Card>
       <CardHeader>
@@ -17,12 +14,12 @@ export default function TagSection() {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3">
-          {mockTags.map((tag) => (
+          <Link href={`?tag=`}>
+            <TagItem tag={{ name: '전체', count: totalCount }} selectedTag={selectedTag} isAll />
+          </Link>
+          {tags?.map((tag) => (
             <Link href={`?tag=${tag.name}`} key={tag.name}>
-              <div className="hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors">
-                <span>{tag.name}</span>
-                <span>{tag.count}</span>
-              </div>
+              <TagItem tag={tag} selectedTag={selectedTag} />
             </Link>
           ))}
         </div>
@@ -30,3 +27,28 @@ export default function TagSection() {
     </Card>
   );
 }
+
+const TagItem = ({
+  tag,
+  selectedTag,
+  isAll,
+}: {
+  tag: TagFilterItem;
+  selectedTag: string;
+  isAll: boolean;
+}) => {
+  return (
+    <Link href={`?tag=${isAll ? '' : tag.name}`} key={tag.name}>
+      <div
+        className={`hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors ${
+          selectedTag === tag.name || (isAll && selectedTag === '')
+            ? 'bg-muted-foreground/10 font-bold text-black'
+            : ''
+        }`}
+      >
+        <span>{tag.name}</span>
+        <span>{tag.count}</span>
+      </div>
+    </Link>
+  );
+};

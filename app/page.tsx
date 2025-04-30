@@ -10,39 +10,23 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Link from 'next/link';
-const mockPosts = [
-  {
-    id: '1',
-    title: 'Next.js 13으로 블로그 만들기',
-    description: 'Next.js 13과 Notion API를 활용하여 개인 블로그를 만드는 방법을 알아봅니다.',
-    coverImage: 'https://picsum.photos/800/400',
-    tags: [
-      { id: '1', name: 'Next.js' },
-      { id: '2', name: 'React' },
-    ],
-    authors: '짐코딩',
-    date: '2024-02-01',
-  },
-  {
-    id: '2',
-    title: 'TypeScript 기초 다지기',
-    description: 'TypeScript의 기본 문법과 실전에서 자주 사용되는 패턴들을 살펴봅니다.',
-    coverImage: 'https://picsum.photos/800/401',
-    tags: [
-      { id: '3', name: 'TypeScript' },
-      { id: '4', name: 'JavaScript' },
-    ],
-    authors: '짐코딩',
-    date: '2024-01-15',
-  },
-];
+import { getPublishedPosts, getTags } from '@/lib/notion';
 
-export default function Home() {
+interface IProps {
+  searchParams: Promise<{
+    tag?: string;
+  }>;
+}
+
+export default async function Home({ searchParams }: IProps) {
+  const { tag } = await searchParams;
+  const [posts, tags] = await Promise.all([getPublishedPosts(tag), getTags()]);
+
   return (
     <div className="container py-8">
       <div className="grid grid-cols-[200px_1fr_220px] gap-6">
         <aside>
-          <TagSection />
+          <TagSection tags={tags} selectedTag={tag} totalCount={posts.length} />
         </aside>
 
         <div className="space-y-8">
@@ -59,9 +43,9 @@ export default function Home() {
             </Select>
           </div>
           <div className="grid gap-4">
-            {mockPosts.map((post) => (
-              <Link href={`/blog/${post.id}`} key={post.id}>
-                <PostCard key={post.id} post={post} />
+            {posts?.map((post) => (
+              <Link href={post.id ? `/blog/${String(post.id)}` : '/blog'} key={post.id}>
+                <PostCard post={post} key={post.id} />
               </Link>
             ))}
           </div>

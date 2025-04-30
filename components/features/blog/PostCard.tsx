@@ -6,15 +6,15 @@ import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Calendar, User } from 'lucide-react';
 import Image from 'next/image';
-import { NotionPost } from '@/types/notion';
+import { Post } from '@/types/blog';
 
-interface PostCardProps {
-  post: NotionPost;
+interface IProps {
+  post: Post;
 }
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post }: IProps) {
   return (
-    <Card className="group bg-card/50 border-border/40 hover:border-primary/20 overflow-hidden border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+    <Card className="group bg-card/50 border-border/40 hover:border-primary/20 overflow-hidden border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg min-w-xl">
       {post.coverImage && (
         <div className="relative aspect-[2/1] overflow-hidden">
           <div className="from-background/20 absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
@@ -55,10 +55,10 @@ export function PostCard({ post }: PostCardProps) {
               <span>{post.author}</span>
             </div>
           )}
-          {post.date && (
+          {post.createdDate && (
             <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              <time>{format(new Date(post.date), 'PPP', { locale: ko })}</time>
+              <time>{format(new Date(post.createdDate), 'PPP', { locale: ko })}</time>
             </div>
           )}
         </div>
