@@ -1,8 +1,8 @@
 import Link from 'next/link';
-
+import ThemeSwitch from '@/components/ThemeSwitch';
 export default function Header() {
   return (
-    <header className="bg-background sticky top-0 z-50 border-b">
+    <header className="sticky top-0 z-50 border-b bg-white dark:bg-black">
       <div className="container flex h-[var(--header-height)] items-center px-4">
         <Link href="/" className="text-xl font-semibold">
           <span className="font-bold">모카 블로그</span>
@@ -17,6 +17,7 @@ export default function Header() {
           <Link href="/about" className="hover:text-primary font-medium">
             소개
           </Link>
+          <ThemeSwitch />
         </nav>
       </div>
     </header>

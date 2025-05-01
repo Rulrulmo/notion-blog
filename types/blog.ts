@@ -10,6 +10,7 @@ export interface Tag {
   color: string;
 }
 
+
 export interface Post {
   id: string;
   title: string;
@@ -19,4 +20,5 @@ export interface Post {
   modifiedDate?: string;
   slug?: string;
   author?: string;
+  content?: string;
 }

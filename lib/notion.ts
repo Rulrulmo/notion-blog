@@ -1,9 +1,39 @@
 import { Client } from '@notionhq/client';
 import { Post } from '@/types/blog';
+import { NotionToMarkdown } from 'notion-to-md';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
+
+const n2m = new NotionToMarkdown({ notionClient: notion });
+
+const getMetadataFromPage = (page: PageObjectResponse): Post => {
+  const { properties } = page;
+
+  const getCoverImage = (cover: PageObjectResponse['cover']) => {
+    if (!cover) return '';
+
+    switch (cover.type) {
+      case 'external':
+        return cover.external.url;
+      case 'file':
+        return cover.file.url;
+      default:
+        return '';
+    }
+  };
+
+  return {
+    id: page.id,
+    title: properties.제목.type === 'title' ? (properties.제목.title[0]?.plain_text ?? '') : '',
+    coverImage: getCoverImage(page.cover),
+    tags: properties.태그.type === 'multi_select' ? properties.태그.multi_select : [],
+    createdDate: properties.게시일.type === 'date' ? (properties.게시일.date?.start ?? '') : '',
+    modifiedDate: page.properties.updated_at.last_edited_time || '',
+    author: properties.작성자.type === 'people' ? (properties.작성자.people[0]?.name ?? '') : '',
+  };
+};
 
 export const getPublishedPosts = async (tag?: string): Promise<Post[]> => {
   const response = await notion.databases.query({
@@ -38,33 +68,7 @@ export const getPublishedPosts = async (tag?: string): Promise<Post[]> => {
 
   return response.results
     .filter((page): page is PageObjectResponse => 'properties' in page)
-    .map((page) => {
-      const { properties } = page;
-
-      const getCoverImage = (cover: PageObjectResponse['cover']) => {
-        if (!cover) return '';
-
-        switch (cover.type) {
-          case 'external':
-            return cover.external.url;
-          case 'file':
-            return cover.file.url;
-          default:
-            return '';
-        }
-      };
-
-      return {
-        id: page.id,
-        title: properties.제목.type === 'title' ? (properties.제목.title[0]?.plain_text ?? '') : '',
-        coverImage: getCoverImage(page.cover),
-        tags: properties.태그.type === 'multi_select' ? properties.태그.multi_select : [],
-        createdDate: properties.게시일.type === 'date' ? (properties.게시일.date?.start ?? '') : '',
-        modifiedDate: page.properties.updated_at.last_edited_time || '',
-        author:
-          properties.작성자.type === 'people' ? (properties.작성자.people[0]?.name ?? '') : '',
-      };
-    });
+    .map(getMetadataFromPage);
 };
 
 const getTagCounts = async (): Promise<Record<string, number>> => {
@@ -100,4 +104,14 @@ export const getTags = async (): Promise<{
     ...tag,
     count: tagCounts[tag.name] || 0,
   }));
+};
+
+export const getPostById = async (id: string): Promise<Post> => {
+  const response = await notion.pages.retrieve({ page_id: id });
+  const mdBlocks = await n2m.pageToMarkdown(id);
+  const mdString = n2m.toMarkdownString(mdBlocks);
+  return {
+    ...getMetadataFromPage(response),
+    content: mdString.parent,
+  };
 };
