@@ -2,6 +2,7 @@ import { Client } from '@notionhq/client';
 import { Post, TagFilterItem } from '@/types/blog';
 import { NotionToMarkdown } from 'notion-to-md';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { getMetadataFromPage } from '@/lib/utils';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -9,37 +10,7 @@ export const notion = new Client({
 
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
-const getMetadataFromPage = (page: PageObjectResponse): Post => {
-  const { properties } = page;
-
-  const getCoverImage = (cover: PageObjectResponse['cover']) => {
-    if (!cover) return '';
-
-    switch (cover.type) {
-      case 'external':
-        return cover.external.url;
-      case 'file':
-        return cover.file.url;
-      default:
-        return '';
-    }
-  };
-
-  return {
-    id: page.id,
-    title: properties.제목.type === 'title' ? (properties.제목.title[0]?.plain_text ?? '') : '',
-    coverImage: getCoverImage(page.cover),
-    tags: properties.태그.type === 'multi_select' ? properties.태그.multi_select : [],
-    createdDate: properties.게시일.type === 'date' ? (properties.게시일.date?.start ?? '') : '',
-    modifiedDate: page.last_edited_time || '',
-    author:
-      properties.작성자.type === 'created_by'
-        ? ((properties.작성자.created_by as { name: string })?.name ?? '')
-        : '',
-  };
-};
-
-export const getPublishedPosts = async (tag?: string): Promise<Post[]> => {
+export const getPublishedPosts = async (tag?: string, sort?: string): Promise<Post[]> => {
   const response = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID!,
     filter: {
@@ -65,7 +36,7 @@ export const getPublishedPosts = async (tag?: string): Promise<Post[]> => {
     sorts: [
       {
         property: '게시일',
-        direction: 'descending',
+        direction: sort === 'oldest' ? 'ascending' : 'descending',
       },
     ],
   });
@@ -75,7 +46,10 @@ export const getPublishedPosts = async (tag?: string): Promise<Post[]> => {
     .map(getMetadataFromPage);
 };
 
-const getTagCounts = async (): Promise<Record<string, number>> => {
+const getTagCounts = async (): Promise<{
+  tagCount: Record<string, number>;
+  totalCount: number;
+}> => {
   const tagCount: Record<string, number> = {};
   const posts = await getPublishedPosts();
   posts.forEach((post) => {
@@ -84,10 +58,13 @@ const getTagCounts = async (): Promise<Record<string, number>> => {
     });
   });
 
-  return tagCount;
+  return { tagCount, totalCount: posts.length };
 };
 
-export const getTags = async (): Promise<TagFilterItem[]> => {
+export const getTags = async (): Promise<{
+  totalCount: number;
+  tags: TagFilterItem[];
+}> => {
   const database = await notion.databases.retrieve({
     database_id: process.env.NOTION_DATABASE_ID!,
   });
@@ -96,15 +73,18 @@ export const getTags = async (): Promise<TagFilterItem[]> => {
     (prop) => prop.type === 'multi_select' && (prop.name === '태그' || prop.id === '태그')
   );
 
-  if (!tagProperty || !('multi_select' in tagProperty)) return [];
+  if (!tagProperty || !('multi_select' in tagProperty)) return { totalCount: 0, tags: [] };
   const tags = tagProperty.multi_select.options.map((option) => option);
 
-  const tagCounts = await getTagCounts();
+  const { tagCount, totalCount } = await getTagCounts();
 
-  return tags.map((tag) => ({
-    ...tag,
-    count: tagCounts[tag.name] || 0,
-  }));
+  return {
+    totalCount,
+    tags: tags.map((tag) => ({
+      ...tag,
+      count: tagCount[tag.name] || 0,
+    })),
+  };
 };
 
 export const getPostById = async (id: string): Promise<Post> => {

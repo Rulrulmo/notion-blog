@@ -3,7 +3,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getPostById } from '@/lib/notion';
+import { getPostById } from '@/api/notion';
 import { MDXRemote } from 'next-mdx-remote-client/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';

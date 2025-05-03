@@ -1,23 +1,15 @@
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Youtube, Github, BookOpen, Instagram } from 'lucide-react';
+import { Github, Mail } from 'lucide-react';
 const socialLinks = [
   {
-    icon: Youtube,
-    href: 'https://www.youtube.com/gymcoding',
-  },
-  {
     icon: Github,
-    href: 'https://github.com/gymcoding',
+    href: 'https://github.com/rulrulmo',
   },
   {
-    icon: BookOpen,
-    href: 'https://www.inflearn.com/users/432199/@gymcoding',
-  },
-  {
-    icon: Instagram,
-    href: 'https://www.instagram.com/gymcoding',
+    icon: Mail,
+    href: 'mailto:hwan901014@gmail.com',
   },
 ];
 
@@ -41,11 +33,10 @@ export default function ProfileSection() {
           </div>
 
           <div className="text-center">
-            <h3 className="text-lg font-bold">모카</h3>
-            <p className="text-primary text-sm">FE Developer</p>
+            <h3 className="text-lg font-bold">룰모</h3>
+            <p className="text-primary text-sm">고양이 집사 FE 개발자</p>
           </div>
-
-          <div className="flex justify-center gap-2">
+          <div className="flex flex-row justify-center gap-2">
             {socialLinks.map((item, index) => (
               <Button key={index} variant="ghost" className="bg-primary/10" size="icon" asChild>
                 <a href={item.href} target="_blank" rel="noopener noreferrer">
@@ -54,11 +45,6 @@ export default function ProfileSection() {
               </Button>
             ))}
           </div>
-
-          <p className="bg-primary/10 rounded p-2 text-center text-sm">
-            배울게 많은 <br />
-            FE 개발자 입니다
-          </p>
         </div>
       </CardContent>
     </Card>
