@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { TagFilterItem } from '@/types/blog';
+
 interface IProps {
   selectedTag: string;
   tags: TagFilterItem[];
@@ -31,11 +33,11 @@ export default async function TagSection({ tags, selectedTag, totalCount }: IPro
 const TagItem = ({
   tag,
   selectedTag,
-  isAll,
+  isAll = false,
 }: {
   tag: TagFilterItem;
   selectedTag: string;
-  isAll: boolean;
+  isAll?: boolean;
 }) => {
   return (
     <Link href={`?tag=${isAll ? '' : tag.name}`} key={tag.name}>

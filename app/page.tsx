@@ -26,7 +26,7 @@ export default async function Home({ searchParams }: IProps) {
     <div className="container py-8">
       <div className="grid grid-cols-[200px_1fr_220px] gap-6">
         <aside>
-          <TagSection tags={tags} selectedTag={tag} totalCount={posts.length} />
+          <TagSection tags={tags} selectedTag={tag!} totalCount={posts.length} />
         </aside>
 
         <div className="space-y-8">

@@ -1,5 +1,4 @@
 export interface TagFilterItem {
-  id: string;
   name: string;
   count: number;
 }
@@ -21,4 +20,5 @@ export interface Post {
   slug?: string;
   author?: string;
   content?: string;
+  description?: string;
 }

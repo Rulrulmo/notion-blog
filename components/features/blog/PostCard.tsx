@@ -43,7 +43,7 @@ export function PostCard({ post }: IProps) {
         <h2 className="group-hover:text-primary mb-2 text-xl font-bold tracking-tight transition-colors">
           {post.title}
         </h2>
-        {post.description && (
+        {post?.description && (
           <p className="text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
             {post.description}
           </p>

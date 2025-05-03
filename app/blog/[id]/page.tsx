@@ -42,11 +42,11 @@ function TableOfContentsLink({ item }: { item: TocEntry }) {
   );
 }
 
-export default async function BlogPost({ params }: { params: { id: string } }) {
+export default async function BlogPost({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const post = await getPostById(id);
 
-  const { data } = await compile(post.content, {
+  const { data } = await compile(post.content ?? '', {
     rehypePlugins: [
       withSlugs,
       withToc,
@@ -65,7 +65,7 @@ export default async function BlogPost({ params }: { params: { id: string } }) {
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Badge>{post.tags.map((tag) => tag.name).join(', ')}</Badge>
+              <Badge>{post.tags?.map((tag) => tag.name).join(', ') ?? ''}</Badge>
               <h1 className="text-4xl font-bold">{post.title}</h1>
             </div>
 
@@ -91,7 +91,7 @@ export default async function BlogPost({ params }: { params: { id: string } }) {
           {/* 블로그 본문 */}
           <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
             <MDXRemote
-              source={post.content}
+              source={post.content ?? ''}
               options={{
                 mdxOptions: {
                   remarkPlugins: [remarkGfm],
@@ -140,9 +140,7 @@ export default async function BlogPost({ params }: { params: { id: string } }) {
             <div className="bg-muted/40 space-y-4 rounded-lg p-6 backdrop-blur-sm">
               <h3 className="text-lg font-semibold">목차</h3>
               <nav className="space-y-3 text-sm">
-                {data.toc.map((item) => (
-                  <TableOfContentsLink key={item.id} item={item} />
-                ))}
+                {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
               </nav>
             </div>
           </div>

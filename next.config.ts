@@ -7,9 +7,6 @@ const withMDX = createMDX({
 
 const nextConfig: NextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  experimental: {
-    turbo: true,
-  },
   images: {
     remotePatterns: [
       {

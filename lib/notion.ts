@@ -1,6 +1,7 @@
 import { Client } from '@notionhq/client';
-import { Post } from '@/types/blog';
+import { Post, TagFilterItem } from '@/types/blog';
 import { NotionToMarkdown } from 'notion-to-md';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -30,14 +31,17 @@ const getMetadataFromPage = (page: PageObjectResponse): Post => {
     coverImage: getCoverImage(page.cover),
     tags: properties.태그.type === 'multi_select' ? properties.태그.multi_select : [],
     createdDate: properties.게시일.type === 'date' ? (properties.게시일.date?.start ?? '') : '',
-    modifiedDate: page.properties.updated_at.last_edited_time || '',
-    author: properties.작성자.type === 'people' ? (properties.작성자.people[0]?.name ?? '') : '',
+    modifiedDate: page.last_edited_time || '',
+    author:
+      properties.작성자.type === 'created_by'
+        ? ((properties.작성자.created_by as { name: string })?.name ?? '')
+        : '',
   };
 };
 
 export const getPublishedPosts = async (tag?: string): Promise<Post[]> => {
   const response = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID,
+    database_id: process.env.NOTION_DATABASE_ID!,
     filter: {
       and: [
         {
@@ -75,7 +79,7 @@ const getTagCounts = async (): Promise<Record<string, number>> => {
   const tagCount: Record<string, number> = {};
   const posts = await getPublishedPosts();
   posts.forEach((post) => {
-    post.tags.forEach((tag: { name: string }) => {
+    post.tags?.forEach((tag: { name: string }) => {
       tagCount[tag.name] = (tagCount[tag.name] || 0) + 1;
     });
   });
@@ -83,10 +87,7 @@ const getTagCounts = async (): Promise<Record<string, number>> => {
   return tagCount;
 };
 
-export const getTags = async (): Promise<{
-  posts: Post[];
-  tags: TagFilterItem[];
-}> => {
+export const getTags = async (): Promise<TagFilterItem[]> => {
   const database = await notion.databases.retrieve({
     database_id: process.env.NOTION_DATABASE_ID!,
   });
@@ -96,7 +97,7 @@ export const getTags = async (): Promise<{
   );
 
   if (!tagProperty || !('multi_select' in tagProperty)) return [];
-  const tags = tagProperty.multi_select.options.map((option) => option) as TagFilterItem[];
+  const tags = tagProperty.multi_select.options.map((option) => option);
 
   const tagCounts = await getTagCounts();
 
@@ -111,7 +112,7 @@ export const getPostById = async (id: string): Promise<Post> => {
   const mdBlocks = await n2m.pageToMarkdown(id);
   const mdString = n2m.toMarkdownString(mdBlocks);
   return {
-    ...getMetadataFromPage(response),
+    ...getMetadataFromPage(response as PageObjectResponse),
     content: mdString.parent,
   };
 };
