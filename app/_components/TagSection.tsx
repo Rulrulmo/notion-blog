@@ -40,17 +40,15 @@ const TagItem = ({
   isAll?: boolean;
 }) => {
   return (
-    <Link href={`?tag=${isAll ? '' : tag.name}`} key={tag.name}>
-      <div
-        className={`hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors ${
-          selectedTag === tag.name || (isAll && selectedTag === '')
-            ? 'bg-muted-foreground/10 font-bold text-black'
-            : ''
-        }`}
-      >
-        <span>{tag.name}</span>
-        <span>{tag.count}</span>
-      </div>
-    </Link>
+    <div
+      className={`hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors ${
+        selectedTag === tag.name || (isAll && selectedTag === '')
+          ? 'bg-muted-foreground/10 font-bold text-black'
+          : ''
+      }`}
+    >
+      <span>{tag.name}</span>
+      <span>{tag.count}</span>
+    </div>
   );
 };
