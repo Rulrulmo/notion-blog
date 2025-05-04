@@ -5,7 +5,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b bg-white dark:bg-black">
       <div className="container flex h-[var(--header-height)] items-center px-4">
         <Link href="/" className="text-xl font-semibold">
-          <span className="font-bold">모카 블로그</span>
+          <span className="font-bold">룰모 블로그</span>
         </Link>
         <nav className="ml-auto flex items-center gap-4">
           <Link href="/" className="hover:text-primary font-medium">

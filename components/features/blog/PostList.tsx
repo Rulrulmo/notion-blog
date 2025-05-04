@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import { PostCard } from './PostCard';
 import { Post } from '@/types/blog';
-
+import { getPublishedPosts } from '@/lib/notion';
 interface IProps {
-  posts: Post[];
+  tag?: string;
+  sort?: string;
 }
 
-export default function PostList({ posts }: IProps) {
+export default async function PostList({ tag, sort }: IProps) {
+  const posts = await getPublishedPosts(tag, sort);
   return (
     <div className="grid gap-4">
       {posts?.map((post, index) => (

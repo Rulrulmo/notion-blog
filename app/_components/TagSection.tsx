@@ -1,14 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { TagFilterItem } from '@/types/blog';
+import { getTags } from '@/lib/notion';
 
 interface IProps {
   selectedTag: string;
-  tags: TagFilterItem[];
-  totalCount: number;
 }
 
-export default async function TagSection({ tags, selectedTag, totalCount }: IProps) {
+export default async function TagSection({ selectedTag }: IProps) {
+  const { tags, totalCount } = await getTags();
   return (
     <Card>
       <CardHeader>
@@ -19,7 +19,7 @@ export default async function TagSection({ tags, selectedTag, totalCount }: IPro
           <Link href={`?tag=`}>
             <TagItem tag={{ name: '전체', count: totalCount }} selectedTag={selectedTag} isAll />
           </Link>
-          {tags?.map((tag) => (
+          {tags?.map((tag: TagFilterItem) => (
             <Link href={`?tag=${tag.name}`} key={tag.name}>
               <TagItem tag={tag} selectedTag={selectedTag} />
             </Link>

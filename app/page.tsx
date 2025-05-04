@@ -1,9 +1,11 @@
-import TagSection from './_components/TagSection';
 import ProfileSection from './_components/ProfileSection';
-import { getPublishedPosts, getTags } from '@/lib/notion';
+import { getTags } from '@/lib/notion';
 import HeaderSection from './_components/HeaderSection';
 import PostList from '@/components/features/blog/PostList';
-import PostListClient from '@/components/features/blog/PostList.client';
+import { Suspense } from 'react';
+import TagSection from './_components/TagSection';
+import TagSectionSkeleton from './_components/TagSectionSkeleton';
+import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 interface IProps {
   searchParams: Promise<{
     tag?: string;
@@ -13,22 +15,21 @@ interface IProps {
 
 export default async function Home({ searchParams }: IProps) {
   const { tag, sort } = await searchParams;
-  const [posts, { tags, totalCount }] = await Promise.all([
-    getPublishedPosts(tag, sort),
-    getTags(),
-  ]);
 
   return (
     <div className="container py-8">
       <div className="grid grid-cols-[200px_1fr_220px] gap-6">
         <aside>
-          <TagSection tags={tags} selectedTag={tag!} totalCount={totalCount} />
+          <Suspense fallback={<TagSectionSkeleton />}>
+            <TagSection selectedTag={tag!} />
+          </Suspense>
         </aside>
 
         <div className="space-y-8">
           <HeaderSection selectedTag={tag || '전체'} />
-          {/* <PostList posts={posts} /> */}
-          <PostListClient />
+          <Suspense fallback={<PostListSkeleton />}>
+            <PostList tag={tag} sort={sort} />
+          </Suspense>
         </div>
 
         <aside className="flex flex-col gap-6">
