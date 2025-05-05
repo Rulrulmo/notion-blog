@@ -1,5 +1,5 @@
 import ProfileSection from './_components/ProfileSection';
-import { getTags } from '@/lib/notion';
+import { getPublishedPosts, getTags } from '@/lib/notion';
 import HeaderSection from './_components/HeaderSection';
 import PostList from '@/components/features/blog/PostList';
 import { Suspense } from 'react';
@@ -15,6 +15,7 @@ interface IProps {
 
 export default async function Home({ searchParams }: IProps) {
   const { tag, sort } = await searchParams;
+  const postsPromise = getPublishedPosts({ tag, sort });
 
   return (
     <div className="container py-8">
@@ -28,7 +29,7 @@ export default async function Home({ searchParams }: IProps) {
         <div className="space-y-8">
           <HeaderSection selectedTag={tag || '전체'} />
           <Suspense fallback={<PostListSkeleton />}>
-            <PostList tag={tag} sort={sort} />
+            <PostList postsPromise={postsPromise} />
           </Suspense>
         </div>
 

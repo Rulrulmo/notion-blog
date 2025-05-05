@@ -10,7 +10,25 @@ export const notion = new Client({
 
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
-export const getPublishedPosts = async (tag?: string, sort?: string): Promise<Post[]> => {
+export interface IGetPublishedPosts {
+  tag?: string;
+  sort?: string;
+  pageSize?: number;
+  startCursor?: string;
+}
+
+export interface IGetPublishedPostsResponse {
+  posts: Post[];
+  hasMore: boolean;
+  nextCursor: string;
+}
+
+export const getPublishedPosts = async ({
+  tag = '전체',
+  sort = 'latest',
+  pageSize = 3,
+  startCursor,
+}: IGetPublishedPosts): Promise<IGetPublishedPostsResponse> => {
   const response = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID!,
     filter: {
@@ -21,7 +39,7 @@ export const getPublishedPosts = async (tag?: string, sort?: string): Promise<Po
             equals: 'Published',
           },
         },
-        ...(tag
+        ...(tag !== '전체'
           ? [
               {
                 property: '태그',
@@ -39,11 +57,19 @@ export const getPublishedPosts = async (tag?: string, sort?: string): Promise<Po
         direction: sort === 'oldest' ? 'ascending' : 'descending',
       },
     ],
+    page_size: pageSize,
+    start_cursor: startCursor,
   });
 
-  return response.results
+  const posts = response.results
     .filter((page): page is PageObjectResponse => 'properties' in page)
     .map(getMetadataFromPage);
+
+  return {
+    posts,
+    hasMore: response.has_more,
+    nextCursor: response.next_cursor || '',
+  };
 };
 
 const getTagCounts = async (): Promise<{
@@ -51,7 +77,7 @@ const getTagCounts = async (): Promise<{
   totalCount: number;
 }> => {
   const tagCount: Record<string, number> = {};
-  const posts = await getPublishedPosts();
+  const { posts } = await getPublishedPosts({});
   posts.forEach((post) => {
     post.tags?.forEach((tag: { name: string }) => {
       tagCount[tag.name] = (tagCount[tag.name] || 0) + 1;

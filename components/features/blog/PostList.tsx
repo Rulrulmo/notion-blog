@@ -1,21 +1,74 @@
+'use client';
+
 import Link from 'next/link';
-import { PostCard } from './PostCard';
-import { Post } from '@/types/blog';
-import { getPublishedPosts } from '@/lib/notion';
+import { PostCard } from '@/components/features/blog/PostCard';
+import { Button } from '@/components/ui/button';
+import { IGetPublishedPostsResponse } from '@/lib/notion';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { use, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { Loader2 } from 'lucide-react';
 interface IProps {
-  tag?: string;
-  sort?: string;
+  postsPromise: Promise<IGetPublishedPostsResponse>;
 }
 
-export default async function PostList({ tag, sort }: IProps) {
-  const posts = await getPublishedPosts(tag, sort);
+export default function PostList({ postsPromise }: IProps) {
+  const initialData = use(postsPromise);
+  const searchParams = useSearchParams();
+  const tag = searchParams.get('tag');
+  const sort = searchParams.get('sort');
+  const [ref, inView] = useInView({ threshold: 0.5 });
+
+  const fetchPosts = async ({ pageParam }: { pageParam: string | undefined }) => {
+    const params = new URLSearchParams();
+    if (tag) params.set('tag', tag);
+    if (sort) params.set('sort', sort);
+    if (pageParam) params.set('startCursor', pageParam);
+
+    const response = await fetch(`/api/posts?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+    return response.json();
+  };
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['posts', tag, sort],
+    queryFn: fetchPosts,
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) => {
+      return lastPage.hasMore ? lastPage.nextCursor : undefined;
+    },
+    initialData: {
+      pages: [initialData],
+      pageParams: [undefined],
+    },
+  });
+
+  const allPosts = data?.pages.flatMap((page) => page.posts) ?? [];
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   return (
-    <div className="grid gap-4">
-      {posts?.map((post, index) => (
-        <Link href={post.id ? `/blog/${String(post.id)}` : '/blog'} key={post.id}>
-          <PostCard post={post} key={post.id} isFirst={index === 0} />
-        </Link>
-      ))}
+    <div className="space-y-6">
+      <div className="grid gap-4">
+        {allPosts.map((post, index) => (
+          <Link href={`/blog/${post.slug}`} key={post.id}>
+            <PostCard post={post} isFirst={index === 0} />
+          </Link>
+        ))}
+      </div>
+      {hasNextPage && !isFetchingNextPage && <div className="h-10" ref={ref}></div>}
+      {isFetchingNextPage && (
+        <div className="text-muted-foreground flex items-center justify-center">
+          <Loader2 className="animate-spin" /> 로딩중...
+        </div>
+      )}
     </div>
   );
 }
