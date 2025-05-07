@@ -11,7 +11,6 @@ import { createPostAction } from '@/app/actions/blog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { revalidateTag } from 'next/cache';
 
 export function PostForm() {
   const queryClient = useQueryClient();
@@ -29,7 +28,6 @@ export function PostForm() {
   useEffect(() => {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      revalidateTag('posts');
       router.push('/');
     }
   }, [state.success, queryClient, router]);

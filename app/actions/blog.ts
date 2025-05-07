@@ -2,6 +2,7 @@
 
 import { createPost } from '@/lib/notion';
 import { z } from 'zod';
+import { revalidateTag } from 'next/cache';
 
 const blogSchema = z.object({
   title: z.string().min(1, { message: '제목을 입력해주세요' }),
@@ -46,6 +47,7 @@ export async function createPostAction(prevState: PostFormState, formData: FormD
   try {
     const { title, tag, content } = validatedFields.data;
     await createPost({ title, tag, content });
+    revalidateTag('posts');
     return {
       message: '포스트 생성에 성공했습니다',
       success: true,
