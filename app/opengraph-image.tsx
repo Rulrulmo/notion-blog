@@ -18,11 +18,10 @@ export default function OgImage() {
     (
       <div
         style={{
-          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column' as const,
+          flexDirection: 'row' as const,
           alignItems: 'center',
           justifyContent: 'center',
           padding: '40px',
@@ -30,7 +29,7 @@ export default function OgImage() {
         }}
       >
         <img
-          src={`${BASE_URL}/logo.png`}
+          src={`${BASE_URL}/images/logo.png`}
           alt="Rulmo Logo"
           width={120}
           height={120}
@@ -41,7 +40,7 @@ export default function OgImage() {
         />
 
         <img
-          src={`${BASE_URL}/rulmoblog.png`}
+          src={`${BASE_URL}/images/rulmoblog.png`}
           alt="Rulmo Blog"
           width={500}
           height={100}
