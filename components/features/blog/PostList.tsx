@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { PostCard } from '@/components/features/blog/PostCard';
-import { Button } from '@/components/ui/button';
 import { IGetPublishedPostsResponse } from '@/lib/notion';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';

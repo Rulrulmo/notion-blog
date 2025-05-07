@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { PostCard } from './PostCard';
 import { Post } from '@/types/blog';
-import { getPublishedPosts } from '@/lib/notion';
 import { useState, useEffect } from 'react';
 
 export default function PostList() {

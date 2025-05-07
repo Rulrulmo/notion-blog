@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { CalendarDays, User, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { CalendarDays, User } from 'lucide-react';
 import { getPostById } from '@/lib/notion';
 import { MDXRemote } from 'next-mdx-remote-client/rsc';
 import remarkGfm from 'remark-gfm';
@@ -14,6 +13,8 @@ import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { GiscusComments } from '@/components/GiscusComments';
+import { notFound } from 'next/navigation';
+import { checkUUID } from '@/lib/utils';
 
 interface TocEntry {
   value: string;
@@ -45,7 +46,16 @@ function TableOfContentsLink({ item }: { item: TocEntry }) {
 
 export default async function BlogPost({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+
+  // if (!checkUUID(id)) {
+  //   notFound();
+  // }
+
   const post = await getPostById(id);
+
+  if (!post) {
+    notFound();
+  }
 
   const { data } = await compile(post.content ?? '', {
     rehypePlugins: [
@@ -59,15 +69,15 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
   });
 
   return (
-    <div className="container py-6 md:py-12">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[240px_1fr_240px] md:gap-8">
-        <aside className="hidden md:block"></aside>
+    <div className="container py-6 lg:py-12">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_1fr_240px] lg:gap-8">
+        <aside className="hidden lg:block"></aside>
         <section>
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="space-y-2">
               <Badge>{post.tags?.map((tag) => tag.name).join(', ') ?? ''}</Badge>
-              <h1 className="text-3xl font-bold md:text-4xl">{post.title}</h1>
+              <h1 className="text-3xl font-bold sm:text-4xl">{post.title}</h1>
             </div>
 
             {/* 메타 정보 */}
@@ -86,7 +96,7 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
           <Separator className="my-8" />
 
           {/* 모바일 전용 목차 */}
-          <div className="sticky top-[var(--sticky-top)] mb-6 md:hidden">
+          <div className="sticky top-[var(--sticky-top)] mb-6 lg:hidden">
             <details className="bg-muted/60 rounded-lg p-4 backdrop-blur-sm">
               <summary className="cursor-pointer text-lg font-semibold">목차</summary>
               <nav className="mt-3 space-y-3 text-sm">
@@ -143,7 +153,7 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
             </Link>
           </nav> */}
         </section>
-        <aside className="hidden md:block">
+        <aside className="hidden lg:block">
           <div className="sticky top-[var(--sticky-top)]">
             <div className="bg-muted/40 space-y-4 rounded-lg p-6 backdrop-blur-sm">
               <h3 className="text-lg font-semibold">목차</h3>

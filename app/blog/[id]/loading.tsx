@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Loading() {
   return (
     <div className="container py-12">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[240px_1fr_240px] md:gap-8">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_1fr_240px] lg:gap-8">
         <aside></aside>
         <section>
           {/* 헤더 */}
