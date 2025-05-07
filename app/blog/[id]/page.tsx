@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User } from 'lucide-react';
-import { getPostById } from '@/lib/notion';
+import { getPostById, getPublishedPosts } from '@/lib/notion';
 import { MDXRemote } from 'next-mdx-remote-client/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
@@ -14,14 +14,19 @@ import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
-import { checkUUID } from '@/lib/utils';
-
 interface TocEntry {
   value: string;
   depth: number;
   id?: string;
   children?: Array<TocEntry>;
 }
+
+export const generateStaticParams = async () => {
+  const { posts } = await getPublishedPosts({});
+  return posts.map((post) => ({ id: post.id }));
+};
+
+export const revalidate = 180;
 
 function TableOfContentsLink({ item }: { item: TocEntry }) {
   return (
@@ -46,11 +51,6 @@ function TableOfContentsLink({ item }: { item: TocEntry }) {
 
 export default async function BlogPost({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-
-  // if (!checkUUID(id)) {
-  //   notFound();
-  // }
-
   const post = await getPostById(id);
 
   if (!post) {

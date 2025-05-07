@@ -84,7 +84,7 @@ const getTagCounts = async (): Promise<{
   totalCount: number;
 }> => {
   const tagCount: Record<string, number> = {};
-  const { posts } = await getPublishedPosts({});
+  const { posts } = await getPublishedPosts({ pageSize: 1000 });
   posts.forEach((post) => {
     post.tags?.forEach((tag: { name: string }) => {
       tagCount[tag.name] = (tagCount[tag.name] || 0) + 1;
