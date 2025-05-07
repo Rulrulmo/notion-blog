@@ -17,7 +17,6 @@ export interface Post {
   tags?: Tag[];
   createdDate?: string;
   modifiedDate?: string;
-  slug?: string;
   author?: string;
   content?: string;
   description?: string;
