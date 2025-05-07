@@ -17,6 +17,9 @@ export default function Header() {
           <Link href="/about" className="hover:text-primary font-medium">
             소개
           </Link>
+          {/* <Link href="/blog/add" className="hover:text-primary font-medium">
+            글쓰기
+          </Link> */}
           <ThemeSwitch />
         </nav>
       </div>

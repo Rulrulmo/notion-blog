@@ -122,3 +122,52 @@ export const getPostById = async (id: string): Promise<Post> => {
     content: mdString.parent,
   };
 };
+
+export interface CreatePostParams {
+  title: string;
+  tag: string;
+  content: string;
+}
+
+export const createPost = async ({ title, tag, content }: CreatePostParams) => {
+  const response = await notion.pages.create({
+    parent: {
+      database_id: process.env.NOTION_DATABASE_ID!,
+    },
+    properties: {
+      Title: {
+        title: [
+          {
+            text: {
+              content: title,
+            },
+          },
+        ],
+      },
+      Description: {
+        rich_text: [
+          {
+            text: {
+              content: content,
+            },
+          },
+        ],
+      },
+      Tags: {
+        multi_select: [{ name: tag }],
+      },
+      Status: {
+        select: {
+          name: 'Published',
+        },
+      },
+      Date: {
+        date: {
+          start: new Date().toISOString(),
+        },
+      },
+    },
+  });
+
+  return response;
+};
