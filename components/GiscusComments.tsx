@@ -28,8 +28,6 @@ export function GiscusComments() {
       inputPosition="top"
       theme={theme === 'dark' ? 'dark' : 'light'}
       lang="ko"
-      crossorigin="anonymous"
-      async
     />
   );
 }
