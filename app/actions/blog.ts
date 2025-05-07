@@ -17,6 +17,7 @@ export interface PostFormState {
     content?: string[];
   };
   formData?: PostFromData;
+  success?: boolean;
 }
 
 interface PostFromData {
@@ -47,6 +48,7 @@ export async function createPostAction(prevState: PostFormState, formData: FormD
     await createPost({ title, tag, content });
     return {
       message: '포스트 생성에 성공했습니다',
+      success: true,
     };
   } catch (error) {
     console.error(error);

@@ -3,6 +3,7 @@ import { Post, TagFilterItem } from '@/types/blog';
 import { NotionToMarkdown } from 'notion-to-md';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { getMetadataFromPage } from '@/lib/utils';
+import { unstable_cache } from 'next/cache';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -23,54 +24,60 @@ export interface IGetPublishedPostsResponse {
   nextCursor: string;
 }
 
-export const getPublishedPosts = async ({
-  tag = '전체',
-  sort = 'latest',
-  pageSize = 3,
-  startCursor,
-}: IGetPublishedPosts): Promise<IGetPublishedPostsResponse> => {
-  const response = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID!,
-    filter: {
-      and: [
-        {
-          property: 'status',
-          select: {
-            equals: 'Published',
+export const getPublishedPosts = unstable_cache(
+  async ({
+    tag = '전체',
+    sort = 'latest',
+    pageSize = 3,
+    startCursor,
+  }: IGetPublishedPosts): Promise<IGetPublishedPostsResponse> => {
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_DATABASE_ID!,
+      filter: {
+        and: [
+          {
+            property: 'status',
+            select: {
+              equals: 'Published',
+            },
           },
-        },
-        ...(tag !== '전체'
-          ? [
-              {
-                property: '태그',
-                multi_select: {
-                  contains: tag,
+          ...(tag !== '전체'
+            ? [
+                {
+                  property: '태그',
+                  multi_select: {
+                    contains: tag,
+                  },
                 },
-              },
-            ]
-          : []),
-      ],
-    },
-    sorts: [
-      {
-        property: '게시일',
-        direction: sort === 'oldest' ? 'ascending' : 'descending',
+              ]
+            : []),
+        ],
       },
-    ],
-    page_size: pageSize,
-    start_cursor: startCursor,
-  });
+      sorts: [
+        {
+          property: '게시일',
+          direction: sort === 'oldest' ? 'ascending' : 'descending',
+        },
+      ],
+      page_size: pageSize,
+      start_cursor: startCursor,
+    });
 
-  const posts = response.results
-    .filter((page): page is PageObjectResponse => 'properties' in page)
-    .map(getMetadataFromPage);
+    const posts = response.results
+      .filter((page): page is PageObjectResponse => 'properties' in page)
+      .map(getMetadataFromPage);
 
-  return {
-    posts,
-    hasMore: response.has_more,
-    nextCursor: response.next_cursor || '',
-  };
-};
+    return {
+      posts,
+      hasMore: response.has_more,
+      nextCursor: response.next_cursor || '',
+    };
+  },
+  ['posts'],
+  {
+    tags: ['posts'],
+  }
+);
 
 const getTagCounts = async (): Promise<{
   tagCount: Record<string, number>;
