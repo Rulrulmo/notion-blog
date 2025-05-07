@@ -97,7 +97,7 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
 
           {/* 모바일 전용 목차 */}
           <div className="sticky top-[var(--sticky-top)] mb-6 lg:hidden">
-            <details className="bg-muted/60 rounded-lg p-4 backdrop-blur-sm">
+            <details className="bg-muted/60 rounded-lg p-3 backdrop-blur-sm">
               <summary className="cursor-pointer text-lg font-semibold">목차</summary>
               <nav className="mt-3 space-y-3 text-sm">
                 {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
