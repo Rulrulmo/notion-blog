@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: '룰모 블로그',
-  description: '룰모 블로그',
+  title: 'Rulmo 블로그',
+  description: 'FE 개발자 블로그',
 };
 
 export default function RootLayout({
