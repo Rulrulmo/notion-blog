@@ -27,12 +27,12 @@ export const getMetadataFromPage = (page: PageObjectResponse): Post => {
     id: page.id,
     title: properties.제목.type === 'title' ? (properties.제목.title[0]?.plain_text ?? '') : '',
     coverImage: getCoverImage(page.cover),
-    tags: properties.태그.type === 'multi_select' ? properties.태그.multi_select : [],
-    createdDate: properties.게시일.type === 'date' ? (properties.게시일.date?.start ?? '') : '',
+    tags: properties.tags.type === 'multi_select' ? properties.tags.multi_select : [],
+    createdDate: properties.publishDate.type === 'date' ? (properties.publishDate.date?.start ?? '') : '',
     modifiedDate: page.last_edited_time || '',
     author:
-      properties.작성자.type === 'created_by'
-        ? ((properties.작성자.created_by as { name: string })?.name ?? '')
+      properties.author.type === 'created_by'
+        ? ((properties.author.created_by as { name: string })?.name ?? '')
         : '',
   };
 };

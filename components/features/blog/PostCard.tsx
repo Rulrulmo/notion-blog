@@ -15,7 +15,7 @@ interface IProps {
 
 export function PostCard({ post, isFirst }: IProps) {
   return (
-    <Card className="group bg-card/50 border-border/40 hover:border-primary/20 overflow-hidden border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+    <Card className="group bg-card/50 border-border/40 hover:border-primary/20 m-0 gap-2 overflow-hidden border p-0 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
       {post.coverImage && (
         <div className="relative aspect-[2/1] overflow-hidden">
           <div className="from-background/20 absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
@@ -29,7 +29,7 @@ export function PostCard({ post, isFirst }: IProps) {
           />
         </div>
       )}
-      <CardContent className="p-6">
+      <CardContent className="p-4">
         <div className="mb-4 flex flex-wrap gap-2">
           {post.tags?.map((tag) => (
             <Badge

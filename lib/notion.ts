@@ -28,7 +28,7 @@ export const getPublishedPosts = unstable_cache(
   async ({
     tag = '전체',
     sort = 'latest',
-    pageSize = 3,
+    pageSize = 4,
     startCursor,
   }: IGetPublishedPosts): Promise<IGetPublishedPostsResponse> => {
     const response = await notion.databases.query({
@@ -44,7 +44,7 @@ export const getPublishedPosts = unstable_cache(
           ...(tag !== '전체'
             ? [
                 {
-                  property: '태그',
+                  property: 'tags',
                   multi_select: {
                     contains: tag,
                   },
@@ -55,7 +55,7 @@ export const getPublishedPosts = unstable_cache(
       },
       sorts: [
         {
-          property: '게시일',
+          property: 'publishDate',
           direction: sort === 'oldest' ? 'ascending' : 'descending',
         },
       ],
@@ -81,21 +81,19 @@ export const getPublishedPosts = unstable_cache(
 
 const getTagCounts = async (): Promise<{
   tagCount: Record<string, number>;
-  totalCount: number;
 }> => {
   const tagCount: Record<string, number> = {};
-  const { posts } = await getPublishedPosts({ pageSize: 1000 });
+  const { posts } = await getPublishedPosts({ pageSize: 999999 });
   posts.forEach((post) => {
     post.tags?.forEach((tag: { name: string }) => {
       tagCount[tag.name] = (tagCount[tag.name] || 0) + 1;
     });
   });
 
-  return { tagCount, totalCount: posts.length };
+  return { tagCount };
 };
 
 export const getTags = async (): Promise<{
-  totalCount: number;
   tags: TagFilterItem[];
 }> => {
   const database = await notion.databases.retrieve({
@@ -103,16 +101,15 @@ export const getTags = async (): Promise<{
   });
 
   const tagProperty = Object.values(database.properties).find(
-    (prop) => prop.type === 'multi_select' && (prop.name === '태그' || prop.id === '태그')
+    (prop) => prop.type === 'multi_select' && (prop.name === 'tags' || prop.id === 'tags')
   );
 
-  if (!tagProperty || !('multi_select' in tagProperty)) return { totalCount: 0, tags: [] };
+  if (!tagProperty || !('multi_select' in tagProperty)) return { tags: [] };
   const tags = tagProperty.multi_select.options.map((option) => option);
 
-  const { tagCount, totalCount } = await getTagCounts();
+  const { tagCount } = await getTagCounts();
 
   return {
-    totalCount,
     tags: tags.map((tag) => ({
       ...tag,
       count: tagCount[tag.name] || 0,

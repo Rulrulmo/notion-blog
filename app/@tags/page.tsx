@@ -7,8 +7,12 @@ interface IProps {
   selectedTag: string;
 }
 
-export default async function TagSection({ selectedTag }: IProps) {
-  const { tags, totalCount } = await getTags();
+export const revalidate = 180;
+
+export default async function TagsPage({ selectedTag }: IProps) {
+  const { tags } = await getTags();
+  const totalCount = tags.reduce((acc, tag) => acc + (tag.count || 0), 0);
+
   return (
     <Card>
       <CardHeader>
@@ -48,7 +52,7 @@ const TagItem = ({
       }`}
     >
       <span>{tag.name}</span>
-      <span>{tag.count}</span>
+      <span>{tag.count || ''}</span>
     </div>
   );
 };

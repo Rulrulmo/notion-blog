@@ -1,6 +1,6 @@
 export interface TagFilterItem {
   name: string;
-  count: number;
+  count?: number;
 }
 
 export interface Tag {
