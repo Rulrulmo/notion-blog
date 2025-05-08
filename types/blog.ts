@@ -20,4 +20,9 @@ export interface Post {
   author?: string;
   content?: string;
   description?: string;
+  slug?: number;
+  prevSlug?: number;
+  nextSlug?: number;
+  prevPostTitle?: string;
+  nextPostTitle?: string;
 }

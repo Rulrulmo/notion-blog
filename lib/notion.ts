@@ -62,7 +62,6 @@ export const getPublishedPosts = unstable_cache(
       page_size: pageSize,
       start_cursor: startCursor,
     });
-
     const posts = response.results
       .filter((page): page is PageObjectResponse => 'properties' in page)
       .map(getMetadataFromPage);
@@ -117,15 +116,91 @@ export const getTags = async (): Promise<{
   };
 };
 
-export const getPostById = async (id: string): Promise<Post> => {
-  const response = await notion.pages.retrieve({ page_id: id });
-  const mdBlocks = await n2m.pageToMarkdown(id);
+export const getPostBySlug = async (slug: number): Promise<Post> => {
+  const response = await notion.databases.query({
+    database_id: process.env.NOTION_DATABASE_ID!,
+    filter: {
+      or: [
+        {
+          property: 'slug',
+          number: {
+            equals: slug,
+          },
+        },
+        {
+          property: 'nextSlug',
+          number: {
+            equals: slug,
+          },
+        },
+        {
+          property: 'prevSlug',
+          number: {
+            equals: slug,
+          },
+        },
+      ],
+    },
+  });
+
+  if (!response.results.length) {
+    throw new Error('Post not found');
+  }
+
+  // 현재 글, 이전 글, 다음 글을 구분
+  const currentPost = response.results.find((page) => {
+    const prop = (page as PageObjectResponse).properties.slug;
+    return prop.type === 'unique_id' && prop.unique_id.number === slug;
+  }) as PageObjectResponse;
+
+  const prevPost = response.results.find((page) => {
+    const prop = (page as PageObjectResponse).properties.nextSlug;
+    return prop.type === 'number' && prop.number === slug;
+  }) as PageObjectResponse;
+
+  const nextPost = response.results.find((page) => {
+    const prop = (page as PageObjectResponse).properties.prevSlug;
+    return prop.type === 'number' && prop.number === slug;
+  }) as PageObjectResponse;
+
+  if (!currentPost) {
+    throw new Error('Post not found');
+  }
+
+  const metadata = getMetadataFromPage(currentPost);
+  const mdBlocks = await n2m.pageToMarkdown(currentPost.id);
   const mdString = n2m.toMarkdownString(mdBlocks);
+
+  // 이전 글과 다음 글의 제목 가져오기
+  const prevPostTitle = prevPost
+    ? prevPost.properties.제목.type === 'title'
+      ? (prevPost.properties.제목.title[0]?.plain_text ?? '')
+      : ''
+    : '';
+
+  const nextPostTitle = nextPost
+    ? nextPost.properties.제목.type === 'title'
+      ? (nextPost.properties.제목.title[0]?.plain_text ?? '')
+      : ''
+    : '';
+
   return {
-    ...getMetadataFromPage(response as PageObjectResponse),
+    ...metadata,
     content: mdString.parent,
+    prevPostTitle,
+    nextPostTitle,
   };
 };
+
+// export const getPostById = async (id: string): Promise<Post> => {
+//   const response = await notion.pages.retrieve({ page_id: id });
+//   const mdBlocks = await n2m.pageToMarkdown(id);
+//   const mdString = n2m.toMarkdownString(mdBlocks);
+//   return {
+//     ...getMetadataFromPage(response as PageObjectResponse),
+//     content: mdString.parent,
+//   };
+// };
 
 export interface CreatePostParams {
   title: string;

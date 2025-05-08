@@ -57,7 +57,7 @@ export default function PostList({ postsPromise }: IProps) {
     <div className="space-y-6">
       <div className="grid gap-4">
         {allPosts.map((post, index) => (
-          <Link href={`/blog/${post.id}`} key={post.id}>
+          <Link href={`/blog/${post.slug}`} key={post.id}>
             <PostCard post={post} isFirst={index === 0} />
           </Link>
         ))}

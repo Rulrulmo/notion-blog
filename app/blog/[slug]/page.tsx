@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User } from 'lucide-react';
-import { getPostById, getPublishedPosts } from '@/lib/notion';
+import { getPostBySlug, getPublishedPosts } from '@/lib/notion';
 import { MDXRemote } from 'next-mdx-remote-client/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
@@ -14,6 +14,7 @@ import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
+import { PostNavigation } from './_components/PostNavigation';
 interface TocEntry {
   value: string;
   depth: number;
@@ -23,7 +24,7 @@ interface TocEntry {
 
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts({});
-  return posts.map((post) => ({ id: post.id }));
+  return posts.map((post) => ({ slug: String(post.slug) }));
 };
 
 export const revalidate = 180;
@@ -49,9 +50,9 @@ function TableOfContentsLink({ item }: { item: TocEntry }) {
   );
 }
 
-export default async function BlogPost({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const post = await getPostById(id);
+export default async function BlogPost({ params }: { params: Promise<{ slug: number }> }) {
+  const { slug } = await params;
+  const post = await getPostBySlug(Number(slug));
 
   if (!post) {
     notFound();
@@ -118,40 +119,13 @@ export default async function BlogPost({ params }: { params: Promise<{ id: strin
             />
           </div>
 
-          <Separator className="my-16" />
-          <GiscusComments />
-
           {/* 이전/다음 포스트 네비게이션 */}
-          {/* <nav className="grid grid-cols-2 gap-8">
-            <Link href="/blog/previous-post">
-              <Card className="group hover:bg-muted/50 transition-colors">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <ChevronLeft className="h-4 w-4" />
-                    <span>시작하기</span>
-                  </CardTitle>
-                  <CardDescription className="line-clamp-2">
-                    Next.js를 시작하는 방법부터 프로젝트 구조, 기본 설정까지 상세히 알아봅니다.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
+          <PostNavigation post={post} />
 
-            <Link href="/blog/next-post" className="text-right">
-              <Card className="group hover:bg-muted/50 transition-colors">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-end gap-2 text-base font-medium">
-                    <span>심화 가이드</span>
-                    <ChevronRight className="h-4 w-4" />
-                  </CardTitle>
-                  <CardDescription className="line-clamp-2">
-                    Next.js의 고급 기능들을 활용하여 더 나은 웹 애플리케이션을 만드는 방법을
-                    소개합니다.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-          </nav> */}
+          <Separator className="my-16" />
+
+          {/* 댓글 */}
+          <GiscusComments />
         </section>
         <aside className="hidden lg:block">
           <div className="sticky top-[var(--sticky-top)]">

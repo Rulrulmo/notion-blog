@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { getPostById } from '@/lib/notion';
+import { getPostBySlug } from '@/lib/notion';
 
 // 이미지 크기 정의
 export const size = {
@@ -11,8 +11,8 @@ export const size = {
 export const contentType = 'image/png';
 
 // OG 이미지 생성 함수
-export default async function OgImage({ params }: { params: { id: string } }) {
-  const post = await getPostById(params.id);
+export default async function OgImage({ params }: { params: { slug: string } }) {
+  const post = await getPostBySlug(Number(params.slug));
 
   if (!post || !post.coverImage) {
     return new ImageResponse(

@@ -28,12 +28,21 @@ export const getMetadataFromPage = (page: PageObjectResponse): Post => {
     title: properties.제목.type === 'title' ? (properties.제목.title[0]?.plain_text ?? '') : '',
     coverImage: getCoverImage(page.cover),
     tags: properties.tags.type === 'multi_select' ? properties.tags.multi_select : [],
-    createdDate: properties.publishDate.type === 'date' ? (properties.publishDate.date?.start ?? '') : '',
+    createdDate:
+      properties.publishDate.type === 'date' ? (properties.publishDate.date?.start ?? '') : '',
     modifiedDate: page.last_edited_time || '',
     author:
       properties.author.type === 'created_by'
         ? ((properties.author.created_by as { name: string })?.name ?? '')
         : '',
+    slug:
+      properties.slug.type === 'unique_id'
+        ? properties.slug.unique_id.number || undefined
+        : undefined,
+    prevSlug:
+      properties.prevSlug.type === 'number' ? properties.prevSlug.number || undefined : undefined,
+    nextSlug:
+      properties.nextSlug.type === 'number' ? properties.nextSlug.number || undefined : undefined,
   };
 };
 
