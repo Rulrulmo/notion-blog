@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   title: 'Rulmo 블로그',
   description: 'FE 개발자 블로그',
   other: {
+    'google-site-verification': '44SATZBKarVF1O3uuZJ72fBPdCt9rIqGNQv_-gOS0cQ',
     google: 'notranslate',
   },
 };
