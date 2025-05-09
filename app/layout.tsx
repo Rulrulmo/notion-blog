@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Rulmo 블로그',
+  title: process.env.NODE_ENV === 'development' ? 'Rulmo(dev)' : 'Rulmo 블로그',
   description: 'FE 개발자 블로그',
   other: {
     'google-site-verification': '44SATZBKarVF1O3uuZJ72fBPdCt9rIqGNQv_-gOS0cQ',
