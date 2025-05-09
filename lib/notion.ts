@@ -109,10 +109,12 @@ export const getTags = async (): Promise<{
   const { tagCount } = await getTagCounts();
 
   return {
-    tags: tags.map((tag) => ({
-      ...tag,
-      count: tagCount[tag.name] || 0,
-    })),
+    tags: tags
+      .filter((tag) => tagCount[tag.name] !== undefined)
+      .map((tag) => ({
+        ...tag,
+        count: tagCount[tag.name] || 0,
+      })),
   };
 };
 
