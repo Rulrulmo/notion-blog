@@ -71,7 +71,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
 
   return (
     <div className="container py-6 lg:py-12">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_1fr_240px] lg:gap-8">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_minmax(0,1fr)_240px] lg:gap-8">
         <aside className="hidden lg:block"></aside>
         <section>
           {/* 블로그 헤더 */}
@@ -107,7 +107,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           </div>
 
           {/* 블로그 본문 */}
-          <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
+          <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-3xl">
             <MDXRemote
               source={post.content ?? ''}
               options={{
