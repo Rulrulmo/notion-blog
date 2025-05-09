@@ -26,7 +26,7 @@ export const getMetadataFromPage = (page: PageObjectResponse): Post => {
   return {
     id: page.id,
     title: properties.제목.type === 'title' ? (properties.제목.title[0]?.plain_text ?? '') : '',
-    coverImage: getCoverImage(page.cover),
+    coverImage: getPublishedImageUrl(getCoverImage(page.cover), page.id),
     tags: properties.tags.type === 'multi_select' ? properties.tags.multi_select : [],
     createdDate:
       properties.publishDate.type === 'date' ? (properties.publishDate.date?.start ?? '') : '',
@@ -49,4 +49,9 @@ export const getMetadataFromPage = (page: PageObjectResponse): Post => {
 export const checkUUID = (id: string) => {
   const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return UUID_REGEX.test(id);
+};
+
+export const getPublishedImageUrl = (notionCoverUrl: string, projectId: string) => {
+  const encodedUrl = encodeURIComponent(notionCoverUrl.split('?')[0]);
+  return `${process.env.NEXT_PUBLIC_NOTION_SITE_URL}/image/${encodedUrl}?table=block&id=${projectId}&cache=v2`;
 };
