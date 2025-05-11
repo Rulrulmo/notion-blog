@@ -19,12 +19,12 @@ export default async function Home({ searchParams }: IProps) {
 
   return (
     <div className="container py-8">
-      <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-[200px_1fr_220px]">
-        <aside className="order-2 lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:self-start">
+      <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-[1fr_220px]">
+        {/* <aside className="order-2 lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:self-start">
           <Suspense>
             <TagsPage searchParams={searchParams} />
           </Suspense>
-        </aside>
+        </aside> */}
 
         <div className="order-3 space-y-8 lg:order-none">
           <HeaderSection selectedTag={tag || '전체'} />
@@ -35,6 +35,7 @@ export default async function Home({ searchParams }: IProps) {
 
         <aside className="order-1 flex flex-col gap-6 lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:self-start">
           <ProfileSection />
+          <TagsPage searchParams={searchParams} />
           {/* <ContactSection /> */}
         </aside>
       </div>

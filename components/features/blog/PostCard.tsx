@@ -15,7 +15,7 @@ interface IProps {
 
 export function PostCard({ post, isFirst }: IProps) {
   return (
-    <Card className="group bg-card/50 border-border/40 hover:border-primary/20 m-0 gap-2 overflow-hidden border p-0 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+    <Card className="group bg-card/50 border-border/40 hover:border-primary/20 m-0 gap-1 overflow-hidden border p-0 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
       {post.coverImage && (
         <div className="relative aspect-[2/1] overflow-hidden">
           <div className="from-background/20 absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
@@ -42,15 +42,18 @@ export function PostCard({ post, isFirst }: IProps) {
             </Badge>
           ))}
         </div>
-        <h2 className="group-hover:text-primary mb-2 text-xl font-bold tracking-tight transition-colors">
+        {/* <h2 className="group-hover:text-primary mb-2 text-xl font-bold tracking-tight transition-colors">
+          {post.title}
+        </h2> */}
+        <h2 className="group-hover:text-primary mb-1 max-w-[100%] truncate text-lg font-bold tracking-tight transition-colors">
           {post.title}
         </h2>
-        {post?.description && (
-          <p className="text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
+        {/* {post?.description && (
+          <p className="text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
             {post.description}
           </p>
-        )}
-        <div className="text-muted-foreground mt-6 flex items-center gap-x-4 text-sm">
+        )} */}
+        <div className="text-muted-foreground mt-1 flex items-center gap-x-4 text-sm">
           {post.author && (
             <div className="flex items-center gap-1.5">
               <User className="h-4 w-4" />
