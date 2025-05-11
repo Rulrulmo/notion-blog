@@ -19,7 +19,7 @@ export default async function Home({ searchParams }: IProps) {
 
   return (
     <div className="container py-8">
-      <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 lg:grid-cols-[200px_1fr_220px]">
+      <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-[200px_1fr_220px]">
         <aside className="order-2 lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:self-start">
           <Suspense>
             <TagsPage searchParams={searchParams} />

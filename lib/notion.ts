@@ -28,7 +28,7 @@ export const getPublishedPosts = unstable_cache(
   async ({
     tag = '전체',
     sort = 'latest',
-    pageSize = 4,
+    pageSize = 10,
     startCursor,
   }: IGetPublishedPosts): Promise<IGetPublishedPostsResponse> => {
     const response = await notion.databases.query({
