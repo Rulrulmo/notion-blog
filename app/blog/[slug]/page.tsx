@@ -15,6 +15,8 @@ import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { PostNavigation } from './_components/PostNavigation';
+import { Suspense } from 'react';
+import TagsPage from '@/app/@tags/page';
 interface TocEntry {
   value: string;
   depth: number;
@@ -72,7 +74,12 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
   return (
     <div className="container py-6 lg:py-12">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_minmax(0,1fr)_240px] lg:gap-8">
-        <aside className="hidden lg:block"></aside>
+        {/* <aside className="hidden lg:block"></aside> */}
+        <aside className="order-2 hidden lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:block lg:self-start">
+          <Suspense>
+            <TagsPage searchParams={Promise.resolve({ tag: post.tags?.[0]?.name ?? '' })} />
+          </Suspense>
+        </aside>
         <section>
           {/* 블로그 헤더 */}
           <div className="space-y-4">

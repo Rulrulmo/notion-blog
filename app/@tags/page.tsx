@@ -3,13 +3,17 @@ import Link from 'next/link';
 import { TagFilterItem } from '@/types/blog';
 import { getTags } from '@/lib/notion';
 
-interface IProps {
-  selectedTag: string;
+interface PageProps {
+  searchParams?: Promise<{
+    tag?: string;
+  }>;
 }
 
 export const revalidate = 180;
 
-export default async function TagsPage({ selectedTag }: IProps) {
+export default async function TagsPage({ searchParams }: PageProps) {
+  const { tag } = (await searchParams) ?? {};
+  const selectedTag = tag || '';
   const { tags } = await getTags();
   const totalCount = tags.reduce((acc, tag) => acc + (tag.count || 0), 0);
 
@@ -20,11 +24,11 @@ export default async function TagsPage({ selectedTag }: IProps) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3">
-          <Link href={`?tag=`}>
+          <Link href={`/?tag=`}>
             <TagItem tag={{ name: '전체', count: totalCount }} selectedTag={selectedTag} isAll />
           </Link>
           {tags?.map((tag: TagFilterItem) => (
-            <Link href={`?tag=${tag.name}`} key={tag.name}>
+            <Link href={`/?tag=${tag.name}`} key={tag.name}>
               <TagItem tag={tag} selectedTag={selectedTag} />
             </Link>
           ))}
@@ -40,7 +44,7 @@ const TagItem = ({
   isAll = false,
 }: {
   tag: TagFilterItem;
-  selectedTag: string;
+  selectedTag?: string;
   isAll?: boolean;
 }) => {
   return (
