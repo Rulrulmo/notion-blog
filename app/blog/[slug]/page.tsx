@@ -3,11 +3,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User } from 'lucide-react';
 import { getPostBySlug, getPublishedPosts } from '@/lib/notion';
-import { MDXRemote } from 'next-mdx-remote-client/rsc';
-import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
-import rehypePrettyCode from 'rehype-pretty-code';
-import rehypeSlug from 'rehype-slug';
 import { compile } from '@mdx-js/mdx';
 import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
@@ -15,8 +11,8 @@ import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { PostNavigation } from './_components/PostNavigation';
-// import { Suspense } from 'react';
-// import TagsPage from '@/app/@tags/page';
+import MdxRenderer from './_components/MdxRenderer';
+
 interface TocEntry {
   value: string;
   depth: number;
@@ -31,27 +27,6 @@ export const generateStaticParams = async () => {
 
 export const revalidate = 180;
 
-function TableOfContentsLink({ item }: { item: TocEntry }) {
-  return (
-    <div className="space-y-2">
-      <Link
-        key={item.id}
-        href={`#${item.id}`}
-        className={`hover:text-foreground text-muted-foreground block font-medium transition-colors`}
-      >
-        {item.value}
-      </Link>
-      {item.children && item.children.length > 0 && (
-        <div className="space-y-2 pl-4">
-          {item.children.map((subItem) => (
-            <TableOfContentsLink key={subItem.id} item={subItem} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default async function BlogPost({ params }: { params: Promise<{ slug: number }> }) {
   const { slug } = await params;
   const post = await getPostBySlug(Number(slug));
@@ -61,14 +36,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
   }
 
   const { data } = await compile(post.content ?? '', {
-    rehypePlugins: [
-      withSlugs,
-      withToc,
-      withTocExport,
-      rehypeSanitize,
-      /** Optionally, provide a custom name for the export. */
-      // [withTocExport, { name: 'toc' }],
-    ],
+    rehypePlugins: [withSlugs, withToc, withTocExport, rehypeSanitize],
   });
 
   return (
@@ -114,16 +82,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           </div>
 
           {/* 블로그 본문 */}
-          <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-3xl">
-            <MDXRemote
-              source={post.content ?? ''}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [rehypeSanitize, rehypePrettyCode, rehypeSlug],
-                },
-              }}
-            />
+          <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-3xl [&_a]:no-underline">
+            <MdxRenderer content={post.content ?? ''} />
           </div>
 
           {/* 이전/다음 포스트 네비게이션 */}
@@ -145,6 +105,27 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           </div>
         </aside>
       </div>
+    </div>
+  );
+}
+
+function TableOfContentsLink({ item }: { item: TocEntry }) {
+  return (
+    <div className="space-y-2">
+      <Link
+        key={item.id}
+        href={`#${item.id}`}
+        className={`hover:text-foreground text-muted-foreground block font-medium transition-colors`}
+      >
+        {item.value}
+      </Link>
+      {item.children && item.children.length > 0 && (
+        <div className="space-y-2 pl-4">
+          {item.children.map((subItem) => (
+            <TableOfContentsLink key={subItem.id} item={subItem} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
