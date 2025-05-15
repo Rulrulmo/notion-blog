@@ -12,8 +12,6 @@ export const notion = new Client({
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
 export interface IGetPublishedPosts {
-  tag?: string;
-  sort?: string;
   pageSize?: number;
   startCursor?: string;
 }
@@ -25,12 +23,7 @@ export interface IGetPublishedPostsResponse {
 }
 
 export const getPublishedPosts = unstable_cache(
-  async ({
-    tag = '전체',
-    sort = 'latest',
-    pageSize = 20,
-    startCursor,
-  }: IGetPublishedPosts): Promise<IGetPublishedPostsResponse> => {
+  async (startCursor?: string): Promise<IGetPublishedPostsResponse> => {
     const response = await notion.databases.query({
       database_id: process.env.NOTION_DATABASE_ID!,
       filter: {
@@ -41,25 +34,15 @@ export const getPublishedPosts = unstable_cache(
               equals: 'Published',
             },
           },
-          ...(tag !== '전체'
-            ? [
-                {
-                  property: 'tags',
-                  multi_select: {
-                    contains: tag,
-                  },
-                },
-              ]
-            : []),
         ],
       },
       sorts: [
         {
           property: 'publishDate',
-          direction: sort === 'oldest' ? 'ascending' : 'descending',
+          direction: 'descending',
         },
       ],
-      page_size: pageSize,
+      page_size: 9999,
       start_cursor: startCursor,
     });
     const posts = response.results
@@ -82,7 +65,7 @@ const getTagCounts = async (): Promise<{
   tagCount: Record<string, number>;
 }> => {
   const tagCount: Record<string, number> = {};
-  const { posts } = await getPublishedPosts({ pageSize: 999999 });
+  const { posts } = await getPublishedPosts();
   posts.forEach((post) => {
     post.tags?.forEach((tag: { name: string }) => {
       tagCount[tag.name] = (tagCount[tag.name] || 0) + 1;

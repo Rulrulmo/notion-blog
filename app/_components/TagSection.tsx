@@ -1,22 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
+'use client';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { TagFilterItem } from '@/types/blog';
-import { getTags } from '@/lib/notion';
+import Link from 'next/link';
 
-interface PageProps {
-  searchParams?: Promise<{
-    tag?: string;
-  }>;
+interface IProps {
+  tags: TagFilterItem[];
+  selectedTag: string;
 }
 
-export const revalidate = 180;
-
-export default async function TagsPage({ searchParams }: PageProps) {
-  const { tag } = (await searchParams) ?? {};
-  const selectedTag = tag || '';
-  const { tags } = await getTags();
+export default function TagSection({ tags, selectedTag }: IProps) {
   const totalCount = tags.reduce((acc, tag) => acc + (tag.count || 0), 0);
-
   return (
     <Card>
       <CardHeader>
@@ -24,11 +17,11 @@ export default async function TagsPage({ searchParams }: PageProps) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3">
-          <Link href={`/?tag=`}>
+          <Link href={`/?tag=`} className="block">
             <TagItem tag={{ name: '전체', count: totalCount }} selectedTag={selectedTag} isAll />
           </Link>
           {tags?.map((tag: TagFilterItem) => (
-            <Link href={`/?tag=${tag.name}`} key={tag.name}>
+            <Link href={`/?tag=${tag.name}`} key={tag.name} className="block">
               <TagItem tag={tag} selectedTag={selectedTag} />
             </Link>
           ))}

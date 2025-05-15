@@ -1,10 +1,8 @@
 import ProfileSection from './_components/ProfileSection';
-import { getPublishedPosts } from '@/lib/notion';
+import { getTags } from '@/lib/notion';
 import HeaderSection from './_components/HeaderSection';
 import PostList from '@/components/features/blog/PostList';
-import { Suspense } from 'react';
-import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
-import TagsPage from './@tags/page';
+import TagSection from './_components/TagSection';
 
 interface IProps {
   searchParams: Promise<{
@@ -15,28 +13,17 @@ interface IProps {
 
 export default async function Home({ searchParams }: IProps) {
   const { tag, sort } = await searchParams;
-  const postsPromise = getPublishedPosts({ tag, sort });
-
+  const { tags } = await getTags();
   return (
     <div className="container py-8">
       <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-[1fr_220px]">
-        {/* <aside className="order-2 lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:self-start">
-          <Suspense>
-            <TagsPage searchParams={searchParams} />
-          </Suspense>
-        </aside> */}
-
         <div className="order-3 space-y-8 lg:order-none">
           <HeaderSection selectedTag={tag || '전체'} />
-          <Suspense fallback={<PostListSkeleton />}>
-            <PostList postsPromise={postsPromise} />
-          </Suspense>
+          <PostList tag={tag || 'all'} sort={sort || 'latest'} />
         </div>
-
         <aside className="order-1 flex flex-col gap-6 lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:self-start">
           <ProfileSection />
-          <TagsPage searchParams={searchParams} />
-          {/* <ContactSection /> */}
+          <TagSection tags={tags} selectedTag={tag || ''} />
         </aside>
       </div>
     </div>

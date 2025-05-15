@@ -21,7 +21,7 @@ interface TocEntry {
 }
 
 export const generateStaticParams = async () => {
-  const { posts } = await getPublishedPosts({});
+  const { posts } = await getPublishedPosts();
   return posts.map((post) => ({ slug: String(post.slug) }));
 };
 

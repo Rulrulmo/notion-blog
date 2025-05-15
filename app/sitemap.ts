@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ] as const;
 
-  const { posts } = await getPublishedPosts({ pageSize: 1000 });
+  const { posts } = await getPublishedPosts();
 
   const blogPosts = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
@@ -36,6 +36,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // 정적 페이지와 블로그 게시물 결합
   return [...staticPages, ...blogPosts];
 }

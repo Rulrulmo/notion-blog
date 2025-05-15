@@ -2,27 +2,22 @@
 
 import Link from 'next/link';
 import { PostCard } from '@/components/features/blog/PostCard';
-import { IGetPublishedPostsResponse } from '@/lib/notion';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-import { use, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
+import { Tag } from '@/types/blog';
+import PostListSkeleton from './PostListSkeleton';
 interface IProps {
-  postsPromise: Promise<IGetPublishedPostsResponse>;
+  tag?: string;
+  sort?: string;
 }
 
-export default function PostList({ postsPromise }: IProps) {
-  const initialData = use(postsPromise);
-  const searchParams = useSearchParams();
-  const tag = searchParams.get('tag');
-  const sort = searchParams.get('sort');
+export default function PostList({ tag, sort }: IProps) {
   const [ref, inView] = useInView({ threshold: 0.5 });
 
   const fetchPosts = async ({ pageParam }: { pageParam: string | undefined }) => {
     const params = new URLSearchParams();
-    if (tag) params.set('tag', tag);
-    if (sort) params.set('sort', sort);
     if (pageParam) params.set('startCursor', pageParam);
 
     const response = await fetch(`/api/posts?${params.toString()}`);
@@ -32,26 +27,36 @@ export default function PostList({ postsPromise }: IProps) {
     return response.json();
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['posts', tag, sort],
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
+    queryKey: ['posts'],
     queryFn: fetchPosts,
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => {
       return lastPage.hasMore ? lastPage.nextCursor : undefined;
     },
-    initialData: {
-      pages: [initialData],
-      pageParams: [undefined],
-    },
   });
 
-  const allPosts = data?.pages.flatMap((page) => page.posts) ?? [];
+  const allPosts =
+    data?.pages
+      .flatMap((page) => page.posts)
+      .filter((post) => (tag === 'all' ? true : post.tags?.some((item: Tag) => item.name === tag)))
+      .sort((a, b) => {
+        if (sort === 'latest') {
+          return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
+        } else {
+          return new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime();
+        }
+      }) ?? [];
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  if (isLoading) {
+    return <PostListSkeleton />;
+  }
 
   return (
     <div className="space-y-6">
