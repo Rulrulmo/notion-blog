@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: process.env.NODE_ENV === 'development' ? 'Rulmo(dev)' : 'Rulmo 블로그',
   description: 'FE 개발자 블로그',
   other: {
-    'google-site-verification': '44SATZBKarVF1O3uuZJ72fBPdCt9rIqGNQv_-gOS0cQ',
+    'google-site-verification': '6y_o5zhfLHaOhl1Am2NilNmI4Sa9ZkBkN33YdZmh930',
     google: 'notranslate',
   },
 };
