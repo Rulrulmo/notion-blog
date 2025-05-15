@@ -8,6 +8,11 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: '/blog/add',
       },
+      {
+        userAgent: 'Googlebot',
+        allow: '/',
+        disallow: '/blog/add',
+      },
     ],
     sitemap: 'https://rulmo.vercel.app/sitemap.xml',
   };
