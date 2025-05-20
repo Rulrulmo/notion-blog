@@ -4,10 +4,13 @@ import { NotionToMarkdown } from 'notion-to-md';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { getMetadataFromPage } from '@/lib/utils';
 import { unstable_cache } from 'next/cache';
+import { NotionAPI } from 'notion-client';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
+
+const notionApi = new NotionAPI();
 
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
@@ -62,6 +65,7 @@ export const getPublishedPosts = unstable_cache(
       page_size: pageSize,
       start_cursor: startCursor,
     });
+
     const posts = response.results
       .filter((page): page is PageObjectResponse => 'properties' in page)
       .map(getMetadataFromPage);
@@ -149,7 +153,6 @@ export const getPostBySlug = async (slug: number): Promise<Post> => {
     throw new Error('Post not found');
   }
 
-  // 현재 글, 이전 글, 다음 글을 구분
   const currentPost = response.results.find((page) => {
     const prop = (page as PageObjectResponse).properties.slug;
     return prop.type === 'unique_id' && prop.unique_id.number === slug;
@@ -170,10 +173,8 @@ export const getPostBySlug = async (slug: number): Promise<Post> => {
   }
 
   const metadata = getMetadataFromPage(currentPost);
-  const mdBlocks = await n2m.pageToMarkdown(currentPost.id);
-  const mdString = n2m.toMarkdownString(mdBlocks);
+  const recordMap = await notionApi.getPage(currentPost.id);
 
-  // 이전 글과 다음 글의 제목 가져오기
   const prevPostTitle = prevPost
     ? prevPost.properties.제목.type === 'title'
       ? (prevPost.properties.제목.title[0]?.plain_text ?? '')
@@ -188,21 +189,11 @@ export const getPostBySlug = async (slug: number): Promise<Post> => {
 
   return {
     ...metadata,
-    content: mdString.parent,
+    recordMap,
     prevPostTitle,
     nextPostTitle,
   };
 };
-
-// export const getPostById = async (id: string): Promise<Post> => {
-//   const response = await notion.pages.retrieve({ page_id: id });
-//   const mdBlocks = await n2m.pageToMarkdown(id);
-//   const mdString = n2m.toMarkdownString(mdBlocks);
-//   return {
-//     ...getMetadataFromPage(response as PageObjectResponse),
-//     content: mdString.parent,
-//   };
-// };
 
 export interface CreatePostParams {
   title: string;

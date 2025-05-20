@@ -46,7 +46,6 @@ export default function PostList({ postsPromise }: IProps) {
   });
 
   const allPosts = data?.pages.flatMap((page) => page.posts) ?? [];
-
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();

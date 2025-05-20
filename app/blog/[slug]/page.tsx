@@ -3,22 +3,10 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User } from 'lucide-react';
 import { getPostBySlug, getPublishedPosts } from '@/lib/notion';
-import rehypeSanitize from 'rehype-sanitize';
-import { compile } from '@mdx-js/mdx';
-import withSlugs from 'rehype-slug';
-import withToc from '@stefanprobst/rehype-extract-toc';
-import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { PostNavigation } from './_components/PostNavigation';
-import MdxRenderer from './_components/MdxRenderer';
-
-interface TocEntry {
-  value: string;
-  depth: number;
-  id?: string;
-  children?: Array<TocEntry>;
-}
+import NotionContent from './_components/NotionRenderer';
 
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts({});
@@ -35,19 +23,10 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
     notFound();
   }
 
-  const { data } = await compile(post.content ?? '', {
-    rehypePlugins: [withSlugs, withToc, withTocExport, rehypeSanitize],
-  });
-
   return (
     <div className="container py-6 lg:py-12">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_minmax(0,1fr)_240px] lg:gap-8">
         <aside className="hidden lg:block"></aside>
-        {/* <aside className="order-2 hidden lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:block lg:self-start">
-          <Suspense>
-            <TagsPage searchParams={Promise.resolve({ tag: post.tags?.[0]?.name ?? '' })} />
-          </Suspense>
-        </aside> */}
         <section>
           {/* 블로그 헤더 */}
           <div className="space-y-4">
@@ -71,20 +50,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
 
           <Separator className="my-8" />
 
-          {/* 모바일 전용 목차 */}
-          <div className="sticky top-[var(--sticky-top)] mb-6 lg:hidden">
-            <details className="bg-muted/60 rounded-lg p-3 backdrop-blur-sm">
-              <summary className="cursor-pointer text-lg font-semibold">목차</summary>
-              <nav className="mt-3 space-y-3 text-sm">
-                {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
-              </nav>
-            </details>
-          </div>
-
           {/* 블로그 본문 */}
-          <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-3xl [&_a]:no-underline">
-            <MdxRenderer content={post.content ?? ''} />
-          </div>
+          <NotionContent recordMap={post.recordMap} />
 
           {/* 이전/다음 포스트 네비게이션 */}
           <PostNavigation post={post} />
@@ -99,7 +66,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
             <div className="bg-muted/40 space-y-4 rounded-lg p-6 backdrop-blur-sm">
               <h3 className="text-lg font-semibold">목차</h3>
               <nav className="space-y-3 text-sm">
-                {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
+                {post.recordMap?.block && <TableOfContents recordMap={post.recordMap} />}
               </nav>
             </div>
           </div>
@@ -109,23 +76,9 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
   );
 }
 
-function TableOfContentsLink({ item }: { item: TocEntry }) {
+function TableOfContents({ recordMap }: { recordMap: any }) {
+  // Implement the logic to generate a table of contents based on the recordMap
   return (
-    <div className="space-y-2">
-      <Link
-        key={item.id}
-        href={`#${item.id}`}
-        className={`hover:text-foreground text-muted-foreground block font-medium transition-colors`}
-      >
-        {item.value}
-      </Link>
-      {item.children && item.children.length > 0 && (
-        <div className="space-y-2 pl-4">
-          {item.children.map((subItem) => (
-            <TableOfContentsLink key={subItem.id} item={subItem} />
-          ))}
-        </div>
-      )}
-    </div>
+    <div className="space-y-2">{/* Render the table of contents based on the recordMap */}</div>
   );
 }

@@ -12,7 +12,6 @@ export const getMetadataFromPage = (page: PageObjectResponse): Post => {
 
   const getCoverImage = (cover: PageObjectResponse['cover']) => {
     if (!cover) return '';
-
     switch (cover.type) {
       case 'external':
         return cover.external.url;
