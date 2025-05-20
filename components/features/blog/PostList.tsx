@@ -36,18 +36,7 @@ export default function PostList({ tag, sort }: IProps) {
     },
   });
 
-  const allPosts =
-    data?.pages
-      .flatMap((page) => page.posts)
-      .filter((post) => (tag === 'all' ? true : post.tags?.some((item: Tag) => item.name === tag)))
-      .sort((a, b) => {
-        if (sort === 'latest') {
-          return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
-        } else {
-          return new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime();
-        }
-      }) ?? [];
-
+  const allPosts = data?.pages.flatMap((page) => page.posts) ?? [];
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
