@@ -3,8 +3,8 @@ import { ExtendedRecordMap } from 'notion-types';
 export interface TagFilterItem {
   id: string;
   name: string;
-  color: string;
-  count: number;
+  color?: string;
+  count?: number;
 }
 
 export interface Tag {
@@ -17,7 +17,7 @@ export interface Post {
   id: string;
   title: string;
   coverImage: string;
-  tags: Array<{ name: string }>;
+  tags: Array<{ name: string; id: string }>;
   createdDate: string;
   modifiedDate: string;
   author: string;
@@ -26,5 +26,5 @@ export interface Post {
   nextSlug?: number;
   prevPostTitle?: string;
   nextPostTitle?: string;
-  recordMap: ExtendedRecordMap;
+  recordMap?: ExtendedRecordMap;
 }

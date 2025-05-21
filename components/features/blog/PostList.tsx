@@ -6,7 +6,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
-import { Tag } from '@/types/blog';
 import PostListSkeleton from './PostListSkeleton';
 interface IProps {
   tag?: string;

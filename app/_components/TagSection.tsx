@@ -18,7 +18,11 @@ export default function TagSection({ tags, selectedTag }: IProps) {
       <CardContent>
         <div className="flex flex-col gap-3">
           <Link href={`/?tag=`} className="block">
-            <TagItem tag={{ name: '전체', count: totalCount }} selectedTag={selectedTag} isAll />
+            <TagItem
+              tag={{ id: '', name: '전체', count: totalCount }}
+              selectedTag={selectedTag}
+              isAll
+            />
           </Link>
           {tags?.map((tag: TagFilterItem) => (
             <Link href={`/?tag=${tag.name}`} key={tag.name} className="block">

@@ -9,9 +9,9 @@ import { ExtendedRecordMap } from 'notion-types';
 import { useTheme } from 'next-themes';
 const Code = dynamic(() => import('react-notion-x/build/third-party/code').then((m) => m.Code));
 
-const Collection = dynamic(() =>
-  import('react-notion-x/build/third-party/collection').then((m) => m.Collection)
-);
+// const Collection = dynamic(() =>
+//   import('react-notion-x/build/third-party/collection').then((m) => m.Collection)
+// );
 
 const Equation = dynamic(() =>
   import('react-notion-x/build/third-party/equation').then((m) => m.Equation)
@@ -22,7 +22,7 @@ const Modal = dynamic(() => import('react-notion-x/build/third-party/modal').the
 });
 
 interface NotionContentProps {
-  recordMap: ExtendedRecordMap;
+  recordMap?: ExtendedRecordMap;
 }
 
 export default function NotionContent({ recordMap }: NotionContentProps) {
@@ -30,7 +30,7 @@ export default function NotionContent({ recordMap }: NotionContentProps) {
   return (
     <div className="notion-container">
       <NotionRenderer
-        recordMap={recordMap}
+        recordMap={recordMap || ({} as ExtendedRecordMap)}
         components={{
           Code,
           // Collection,
