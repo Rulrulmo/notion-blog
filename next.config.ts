@@ -27,6 +27,21 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'header',
+            key: 'x-prerender',
+          },
+        ],
+        destination: '/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);
