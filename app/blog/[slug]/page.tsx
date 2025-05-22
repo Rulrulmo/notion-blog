@@ -6,6 +6,8 @@ import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { PostNavigation } from './_components/PostNavigation';
 import NotionContent from './_components/NotionRenderer';
+import { ExtendedRecordMap } from 'notion-types';
+import { TableOfContents } from './_components/TableOfContents';
 
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts();
@@ -72,12 +74,5 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
         </aside>
       </div>
     </div>
-  );
-}
-
-function TableOfContents({ recordMap }: { recordMap: any }) {
-  // Implement the logic to generate a table of contents based on the recordMap
-  return (
-    <div className="space-y-2">{/* Render the table of contents based on the recordMap */}</div>
   );
 }

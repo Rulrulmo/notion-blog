@@ -33,7 +33,7 @@ export default function NotionContent({ recordMap }: NotionContentProps) {
         recordMap={recordMap || ({} as ExtendedRecordMap)}
         components={{
           Code,
-          // Collection,
+          Collection: () => null,
           Equation,
           Modal,
         }}
