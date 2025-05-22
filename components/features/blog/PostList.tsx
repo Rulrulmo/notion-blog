@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
 import PostListSkeleton from './PostListSkeleton';
+import { Tag } from '@/types/blog';
 interface IProps {
   tag?: string;
   sort?: string;
@@ -35,7 +36,19 @@ export default function PostList({ tag, sort }: IProps) {
     },
   });
 
-  const allPosts = data?.pages.flatMap((page) => page.posts) ?? [];
+  const allPosts =
+    data?.pages
+      .flatMap((page) => page.posts)
+      .filter((post) => (tag === 'all' ? true : post.tags?.some((item: Tag) => item.name === tag)))
+      .sort((a, b) => {
+        if (sort === 'latest') {
+          return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
+        } else if (sort === 'oldest') {
+          return new Date(a.publishDate).getTime() - new Date(b.publishDate).getTime();
+        }
+        return 0;
+      }) ?? [];
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
