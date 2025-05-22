@@ -7,6 +7,7 @@ import 'prismjs/themes/prism-tomorrow.css';
 import 'katex/dist/katex.min.css';
 import { ExtendedRecordMap } from 'notion-types';
 import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 const Code = dynamic(() => import('react-notion-x/build/third-party/code').then((m) => m.Code));
 
 // const Collection = dynamic(() =>
@@ -26,7 +27,13 @@ interface NotionContentProps {
 }
 
 export default function NotionContent({ recordMap }: NotionContentProps) {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="notion-container">
       <NotionRenderer
@@ -38,7 +45,7 @@ export default function NotionContent({ recordMap }: NotionContentProps) {
           Modal,
         }}
         fullPage={false}
-        darkMode={theme === 'dark'}
+        darkMode={mounted ? resolvedTheme === 'dark' : false}
       />
     </div>
   );
