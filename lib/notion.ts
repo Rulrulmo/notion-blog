@@ -1,6 +1,5 @@
 import { Client } from '@notionhq/client';
 import { Post, TagFilterItem } from '@/types/blog';
-// import { NotionToMarkdown } from 'notion-to-md';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { getMetadataFromPage } from '@/lib/utils';
 import { unstable_cache } from 'next/cache';
@@ -11,8 +10,6 @@ export const notion = new Client({
 });
 
 const notionApi = new NotionAPI();
-
-// const n2m = new NotionToMarkdown({ notionClient: notion });
 
 export interface IGetPublishedPosts {
   pageSize?: number;

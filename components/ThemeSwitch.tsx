@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 export default function ThemeSwitch() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -17,10 +17,10 @@ export default function ThemeSwitch() {
 
   return (
     <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
     >
-      {theme === 'dark' ? '🌙' : '☀️'}
+      {resolvedTheme === 'dark' ? '🌙' : '☀️'}
     </button>
   );
 }
