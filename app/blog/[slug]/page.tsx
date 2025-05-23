@@ -6,7 +6,6 @@ import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { PostNavigation } from './_components/PostNavigation';
 import NotionContent from './_components/NotionRenderer';
-import { ExtendedRecordMap } from 'notion-types';
 import { TableOfContents } from './_components/TableOfContents';
 
 export const generateStaticParams = async () => {
