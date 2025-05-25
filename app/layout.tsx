@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
 import Providers from './providers';
+import { GoogleAdSense } from '@/components/GoogleAdSense';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -39,6 +40,7 @@ export default function RootLayout({
             {/* Footer 영역 */}
             <Footer />
           </div>
+          <GoogleAdSense />
         </Providers>
       </body>
     </html>
