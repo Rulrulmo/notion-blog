@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { viewsApi } from '@/lib/supabase';
+import { viewsApi } from '@/lib/supabase.client';
 import { Eye } from 'lucide-react';
 import { useEffect } from 'react';
 
