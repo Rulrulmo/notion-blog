@@ -44,7 +44,7 @@ export function PostCard({ post, isFirst }: IProps) {
         {/* <h2 className="group-hover:text-primary mb-2 text-xl font-bold tracking-tight transition-colors">
           {post.title}
         </h2> */}
-        <h2 className="group-hover:text-primary mb-1 max-w-[100%] truncate text-lg font-bold tracking-tight transition-colors">
+        <h2 className="group-hover:text-primary mb-1 line-clamp-2 max-w-[100%] text-lg font-bold tracking-tight transition-colors">
           {post.title}
         </h2>
         {/* {post?.description && (
