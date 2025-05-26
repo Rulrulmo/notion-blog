@@ -63,7 +63,7 @@ export default function PostList({ tag, sort }: IProps) {
     <div className="space-y-6">
       <div className="grid gap-4 lg:grid-cols-3">
         {allPosts.map((post, index) => (
-          <Link href={`/blog/${post.slug}`} key={post.id}>
+          <Link href={`/blog/${post.slug}`} key={post.id} className="block w-full">
             <PostCard post={post} isFirst={index === 0} />
           </Link>
         ))}

@@ -15,9 +15,9 @@ export default async function Home({ searchParams }: IProps) {
   const { tag, sort } = await searchParams;
   const { tags } = await getTags();
   return (
-    <div className="container py-8">
+    <div className="container max-w-full py-8">
       <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-[1fr_220px]">
-        <div className="order-3 space-y-8 lg:order-none">
+        <div className="order-3 w-full space-y-8 lg:order-none">
           <HeaderSection selectedTag={tag || '전체'} />
           <PostList tag={tag || 'all'} sort={sort || 'latest'} />
         </div>

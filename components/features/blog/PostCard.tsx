@@ -26,7 +26,6 @@ export function PostCard({ post, isFirst }: IProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={isFirst}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            style={{ maxWidth: '100%', height: 'auto' }}
           />
         </div>
       )}
