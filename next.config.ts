@@ -24,8 +24,13 @@ const nextConfig: NextConfig = {
       {
         hostname: 'www.notion.so',
       },
+      {
+        hostname:
+          process.env.NEXT_PUBLIC_NOTION_SITE_URL?.replace('https://', '').replace('http://', '') ||
+          '',
+      },
     ],
-    unoptimized: true,
+    // unoptimized: true,
   },
   async redirects() {
     return [
