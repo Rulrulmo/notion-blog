@@ -22,7 +22,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { pathname } = await request.json();
+    // const { pathname } = await request.json();
+    const { searchParams } = new URL(request.url);
+    const slug = searchParams.get('slug');
     const supabase = await createClient();
     const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
 
@@ -31,7 +33,7 @@ export async function POST(request: NextRequest) {
         status: 400,
       });
 
-    await supabase.rpc('new_visitor', { page_pathname: pathname, user_ip: ip });
+    await supabase.rpc('new_visitor', { page_pathname: slug, user_ip: ip });
   } catch (error) {
     return new Response(`Webhook error: ${error}`, {
       status: 400,
