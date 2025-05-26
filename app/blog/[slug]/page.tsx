@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import { PostNavigation } from './_components/PostNavigation';
 import NotionContent from './_components/NotionRenderer';
 import { TableOfContents } from './_components/TableOfContents';
-
+import { ViewCounter } from './_components/ViewCounter';
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts();
   return posts.map((post) => ({ slug: String(post.slug) }));
@@ -45,6 +45,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
                 <CalendarDays className="h-4 w-4" />
                 <span>{post.createdDate}</span>
               </div>
+              <ViewCounter slug={String(slug)} />
             </div>
           </div>
 
