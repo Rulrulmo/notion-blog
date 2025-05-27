@@ -41,17 +41,9 @@ export function PostCard({ post, isFirst }: IProps) {
             </Badge>
           ))}
         </div>
-        {/* <h2 className="group-hover:text-primary mb-2 text-xl font-bold tracking-tight transition-colors">
-          {post.title}
-        </h2> */}
-        <h2 className="group-hover:text-primary mb-1 line-clamp-2 max-w-[100%] text-lg font-bold tracking-tight transition-colors">
+        <h2 className="group-hover:text-primary mb-1 line-clamp-1 max-w-[100%] text-lg font-bold tracking-tight transition-colors">
           {post.title}
         </h2>
-        {/* {post?.description && (
-          <p className="text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-            {post.description}
-          </p>
-        )} */}
         <div className="text-muted-foreground mt-1 flex items-center gap-x-4 text-sm">
           {post.author && (
             <div className="flex items-center gap-1.5">

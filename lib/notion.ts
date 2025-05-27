@@ -42,7 +42,7 @@ export const getPublishedPosts = unstable_cache(
           direction: 'descending',
         },
       ],
-      page_size: 9999,
+      page_size: 100,
       start_cursor: startCursor,
     });
 
@@ -62,43 +62,27 @@ export const getPublishedPosts = unstable_cache(
   }
 );
 
-const getTagCounts = async (): Promise<{
-  tagCount: Record<string, number>;
-}> => {
-  const tagCount: Record<string, number> = {};
-  const { posts } = await getPublishedPosts();
-  posts.forEach((post) => {
-    post.tags?.forEach((tag: { name: string }) => {
-      tagCount[tag.name] = (tagCount[tag.name] || 0) + 1;
-    });
-  });
-
-  return { tagCount };
-};
-
 export const getTags = async (): Promise<{
   tags: TagFilterItem[];
 }> => {
-  const database = await notion.databases.retrieve({
-    database_id: process.env.NOTION_DATABASE_ID!,
+  const { posts } = await getPublishedPosts();
+  const tagSet = new Set<string>();
+  const tagCount: Record<string, number> = {};
+
+  posts.forEach((post) => {
+    const postTags = new Set(post.tags?.map((tag) => tag.name) || []);
+    postTags.forEach((tagName) => {
+      tagSet.add(tagName);
+      tagCount[tagName] = (tagCount[tagName] || 0) + 1;
+    });
   });
 
-  const tagProperty = Object.values(database.properties).find(
-    (prop) => prop.type === 'multi_select' && (prop.name === 'tags' || prop.id === 'tags')
-  );
-
-  if (!tagProperty || !('multi_select' in tagProperty)) return { tags: [] };
-  const tags = tagProperty.multi_select.options.map((option) => option);
-
-  const { tagCount } = await getTagCounts();
-
   return {
-    tags: tags
-      .filter((tag) => tagCount[tag.name] !== undefined)
-      .map((tag) => ({
-        ...tag,
-        count: tagCount[tag.name] || 0,
-      })),
+    tags: Array.from(tagSet).map((tagName) => ({
+      id: tagName,
+      name: tagName,
+      count: tagCount[tagName] || 0,
+    })),
   };
 };
 

@@ -24,11 +24,12 @@ export default function PostList({ tag, sort }: IProps) {
     if (!response.ok) {
       throw new Error('Failed to fetch posts');
     }
-    return response.json();
+    const data = await response.json();
+    return data;
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-    queryKey: ['posts'],
+    queryKey: ['posts', tag, sort],
     queryFn: fetchPosts,
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => {
@@ -36,7 +37,7 @@ export default function PostList({ tag, sort }: IProps) {
     },
   });
 
-  const allPosts =
+  const filteredPosts =
     data?.pages
       .flatMap((page) => page.posts)
       .filter((post) => (tag === 'all' ? true : post.tags?.some((item: Tag) => item.name === tag)))
@@ -62,7 +63,7 @@ export default function PostList({ tag, sort }: IProps) {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 lg:grid-cols-3">
-        {allPosts.map((post, index) => (
+        {filteredPosts.map((post, index) => (
           <Link href={`/blog/${post.slug}`} key={post.id} className="block w-full">
             <PostCard post={post} isFirst={index === 0} />
           </Link>

@@ -16,7 +16,7 @@ export default function TagSection({ tags, selectedTag }: IProps) {
         <CardTitle>태그 목록</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
           <Link href={`/?tag=`} className="block">
             <TagItem
               tag={{ id: '', name: '전체', count: totalCount }}

@@ -17,9 +17,9 @@ export default function ProfileSection() {
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="space-y-4">
+        <div className="space-y-2">
           <div className="flex justify-center">
-            <div className="bg-muted rounded-full p-2">
+            <div className="bg-muted rounded-full p-1">
               <div className="h-36 w-36 overflow-hidden rounded-full">
                 <Image
                   src="/images/moka.jpeg"
@@ -35,7 +35,6 @@ export default function ProfileSection() {
           <div className="text-center">
             <h3 className="text-lg font-bold">룰모</h3>
             <p className="text-primary text-sm">FE 개발자</p>
-            {/* <p className="text-primary text-sm">-</p> */}
           </div>
           <div className="flex flex-row justify-center gap-2">
             {socialLinks.map((item, index) => (
