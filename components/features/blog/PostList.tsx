@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
 import PostListSkeleton from './PostListSkeleton';
-import { Tag } from '@/types/blog';
 interface IProps {
   tag?: string;
   sort?: string;
@@ -19,6 +18,8 @@ export default function PostList({ tag, sort }: IProps) {
   const fetchPosts = async ({ pageParam }: { pageParam: string | undefined }) => {
     const params = new URLSearchParams();
     if (pageParam) params.set('startCursor', pageParam);
+    if (tag && tag !== 'all') params.set('tag', tag);
+    if (sort) params.set('sort', sort);
 
     const response = await fetch(`/api/posts?${params.toString()}`);
     if (!response.ok) {
@@ -37,18 +38,7 @@ export default function PostList({ tag, sort }: IProps) {
     },
   });
 
-  const filteredPosts =
-    data?.pages
-      .flatMap((page) => page.posts)
-      .filter((post) => (tag === 'all' ? true : post.tags?.some((item: Tag) => item.name === tag)))
-      .sort((a, b) => {
-        if (sort === 'latest') {
-          return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
-        } else if (sort === 'oldest') {
-          return new Date(a.publishDate).getTime() - new Date(b.publishDate).getTime();
-        }
-        return 0;
-      }) ?? [];
+  const posts = data?.pages.flatMap((page) => page.posts) ?? [];
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -63,7 +53,7 @@ export default function PostList({ tag, sort }: IProps) {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 lg:grid-cols-3">
-        {filteredPosts.map((post, index) => (
+        {posts.map((post, index) => (
           <Link href={`/blog/${post.slug}`} key={post.id} className="block w-full">
             <PostCard post={post} isFirst={index === 0} />
           </Link>

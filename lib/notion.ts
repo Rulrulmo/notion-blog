@@ -14,6 +14,8 @@ const notionApi = new NotionAPI();
 export interface IGetPublishedPosts {
   pageSize?: number;
   startCursor?: string;
+  tag?: string;
+  sort?: 'latest' | 'oldest';
 }
 
 export interface IGetPublishedPostsResponse {
@@ -23,23 +25,38 @@ export interface IGetPublishedPostsResponse {
 }
 
 export const getPublishedPosts = unstable_cache(
-  async (startCursor?: string): Promise<IGetPublishedPostsResponse> => {
+  async ({
+    startCursor,
+    tag,
+    sort,
+  }: IGetPublishedPosts = {}): Promise<IGetPublishedPostsResponse> => {
+    const filters: any[] = [
+      {
+        property: 'status',
+        select: {
+          equals: 'Published',
+        },
+      },
+    ];
+
+    if (tag && tag !== 'all') {
+      filters.push({
+        property: 'tags',
+        multi_select: {
+          contains: tag,
+        },
+      });
+    }
+
     const response = await notion.databases.query({
       database_id: process.env.NOTION_DATABASE_ID!,
       filter: {
-        and: [
-          {
-            property: 'status',
-            select: {
-              equals: 'Published',
-            },
-          },
-        ],
+        and: filters,
       },
       sorts: [
         {
           property: 'publishDate',
-          direction: 'descending',
+          direction: sort === 'oldest' ? 'ascending' : 'descending',
         },
       ],
       page_size: 100,
