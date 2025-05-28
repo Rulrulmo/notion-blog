@@ -6,10 +6,10 @@ import Link from 'next/link';
 interface IProps {
   tags: TagFilterItem[];
   selectedTag: string;
+  totalCount: number;
 }
 
-export default function TagSection({ tags, selectedTag }: IProps) {
-  const totalCount = tags.reduce((acc, tag) => acc + (tag.count || 0), 0);
+export default function TagSection({ tags, selectedTag, totalCount }: IProps) {
   return (
     <Card>
       <CardHeader>

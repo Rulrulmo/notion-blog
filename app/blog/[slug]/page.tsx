@@ -31,7 +31,11 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Badge>{post.tags?.map((tag) => tag.name).join(', ') ?? ''}</Badge>
+              {post.tags?.map((tag) => (
+                <Badge variant="secondary" key={tag.id}>
+                  {tag.name}
+                </Badge>
+              ))}
               <h1 className="text-3xl font-bold sm:text-4xl">{post.title}</h1>
             </div>
 

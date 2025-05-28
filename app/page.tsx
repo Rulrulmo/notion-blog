@@ -13,7 +13,7 @@ interface IProps {
 
 export default async function Home({ searchParams }: IProps) {
   const { tag, sort } = await searchParams;
-  const { tags } = await getTags();
+  const { tags, totalCount } = await getTags();
   return (
     <div className="container max-w-full py-8">
       <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-[1fr_220px]">
@@ -23,7 +23,7 @@ export default async function Home({ searchParams }: IProps) {
         </div>
         <aside className="order-1 flex flex-col gap-6 lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:self-start">
           <ProfileSection />
-          <TagSection tags={tags} selectedTag={tag || ''} />
+          <TagSection tags={tags} selectedTag={tag || ''} totalCount={totalCount} />
         </aside>
       </div>
     </div>

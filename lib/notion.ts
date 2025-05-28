@@ -81,6 +81,7 @@ export const getPublishedPosts = unstable_cache(
 
 export const getTags = async (): Promise<{
   tags: TagFilterItem[];
+  totalCount: number;
 }> => {
   const { posts } = await getPublishedPosts();
   const tagSet = new Set<string>();
@@ -100,6 +101,7 @@ export const getTags = async (): Promise<{
       name: tagName,
       count: tagCount[tagName] || 0,
     })),
+    totalCount: posts.length,
   };
 };
 
