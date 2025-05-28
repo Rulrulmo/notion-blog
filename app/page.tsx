@@ -1,7 +1,7 @@
 import ProfileSection from './_components/ProfileSection';
 import { getTags } from '@/lib/notion';
 import HeaderSection from './_components/HeaderSection';
-import PostList from '@/components/features/blog/PostList';
+import PostList from '@/components/features/PostList';
 import TagSection from './_components/TagSection';
 
 interface IProps {

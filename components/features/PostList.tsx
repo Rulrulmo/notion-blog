@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { PostCard } from '@/components/features/blog/PostCard';
+import { PostCard } from '@/components/features/PostCard';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
