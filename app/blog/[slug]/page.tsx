@@ -1,6 +1,6 @@
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { CalendarDays, User } from 'lucide-react';
+import { CalendarDays, User, ChevronDown } from 'lucide-react';
 import { getPostBySlug, getPublishedPosts } from '@/lib/notion';
 import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
@@ -8,6 +8,8 @@ import { PostNavigation } from './_components/PostNavigation';
 import NotionContent from './_components/NotionRenderer';
 import { TableOfContents } from './_components/TableOfContents';
 import { ViewCounter } from './_components/ViewCounter';
+import { Button } from '@/components/ui/button';
+
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts();
   return posts.map((post) => ({ slug: String(post.slug) }));
@@ -28,6 +30,30 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_minmax(0,1fr)_240px] lg:gap-8">
         <aside className="hidden lg:block"></aside>
         <section>
+          {/* 모바일용 목차 토글 버튼 */}
+          <div className="mb-4 lg:hidden">
+            <Button
+              variant="outline"
+              className="flex w-full items-center justify-between"
+              onClick={() => {
+                const toc = document.getElementById('mobile-toc');
+                if (toc) {
+                  toc.classList.toggle('hidden');
+                }
+              }}
+            >
+              <span>목차</span>
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+            <div id="mobile-toc" className="mt-2 hidden">
+              <div className="bg-muted/40 space-y-4 rounded-lg p-4 backdrop-blur-sm">
+                <nav className="space-y-3 text-sm">
+                  {post.recordMap?.block && <TableOfContents recordMap={post.recordMap} />}
+                </nav>
+              </div>
+            </div>
+          </div>
+
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="space-y-2">
