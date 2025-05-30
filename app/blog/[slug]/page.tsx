@@ -50,7 +50,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
                 <CalendarDays className="h-4 w-4" />
                 <span>{post.createdDate}</span>
               </div>
-              <ViewCounter slug={String(slug)} />
+              <ViewCounter />
             </div>
           </div>
 

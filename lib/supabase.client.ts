@@ -7,8 +7,8 @@ export const viewsApi = {
     return response.json();
   },
 
-  incrementViewCount: async (slug: string) => {
-    const response = await fetch(`/api/blog?slug=${slug}`, {
+  incrementViewCount: async (pathname: string) => {
+    const response = await fetch(`/api/blog?pathname=${pathname}`, {
       method: 'POST',
     });
     if (!response.ok) {

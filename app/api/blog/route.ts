@@ -4,13 +4,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const supabase = await createServerSideClient();
-  const slug = searchParams.get('slug');
-  if (!slug) {
-    return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
+  const pathname = searchParams.get('pathname');
+  if (!pathname) {
+    return NextResponse.json({ error: 'Pathname is required' }, { status: 400 });
   }
 
   const { data, error } = await supabase.rpc('get_views', {
-    page_pathname: slug,
+    page_pathname: pathname,
   });
 
   if (error) {
@@ -23,11 +23,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const pathname = request.nextUrl.pathname;
-    const slug = searchParams.get('slug');
+    const pathname = searchParams.get('pathname');
 
-    if (!slug) {
-      return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
+    if (!pathname) {
+      return NextResponse.json({ error: 'Pathname is required' }, { status: 400 });
     }
 
     const supabase = await createServerSideClient();
