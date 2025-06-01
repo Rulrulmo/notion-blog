@@ -54,3 +54,12 @@ export const getImageUrl = (notionCoverUrl: string, pageId: string) => {
   const encodedUrl = encodeURIComponent(notionCoverUrl.split('?')[0]);
   return `${process.env.NEXT_PUBLIC_NOTION_SITE_URL}/image/${encodedUrl}?table=block&id=${pageId}&cache=v2`;
 };
+
+export const isValidImageUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
