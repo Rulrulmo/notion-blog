@@ -2,7 +2,13 @@
 
 import { ExtendedRecordMap } from 'notion-types';
 
-export function TableOfContents({ recordMap }: { recordMap: ExtendedRecordMap }) {
+export function TableOfContents({
+  recordMap,
+  onlyHeaders = false,
+}: {
+  recordMap: ExtendedRecordMap;
+  onlyHeaders?: boolean;
+}) {
   const blocks = Object.values(recordMap.block);
   const headers = blocks.filter((block) => {
     const value = block.value;
@@ -34,24 +40,31 @@ export function TableOfContents({ recordMap }: { recordMap: ExtendedRecordMap })
 
   return (
     <div className="space-y-2">
-      {headers.map((header) => {
-        const level = getHeaderLevel(header.value.type);
-        const text = header.value.properties?.title?.[0]?.[0] || '';
-        const id = header.value.id;
-        const cleanId = id.replace(/-/g, '');
+      {headers
+        .filter((header) => {
+          if (onlyHeaders) {
+            return header.value.type === 'sub_header';
+          }
+          return true;
+        })
+        .map((header) => {
+          const level = getHeaderLevel(header.value.type);
+          const text = header.value.properties?.title?.[0]?.[0] || '';
+          const id = header.value.id;
+          const cleanId = id.replace(/-/g, '');
 
-        return (
-          <a
-            key={id}
-            href={`#${cleanId}`}
-            onClick={(e) => handleClick(e, id)}
-            className="text-muted-foreground hover:text-foreground block transition-colors"
-            style={{ paddingLeft: `${(level - 1) * 1}rem` }}
-          >
-            {text}
-          </a>
-        );
-      })}
+          return (
+            <a
+              key={id}
+              href={`#${cleanId}`}
+              onClick={(e) => handleClick(e, id)}
+              className="text-muted-foreground hover:text-foreground block transition-colors"
+              style={{ paddingLeft: `${(level - 1) * 1}rem` }}
+            >
+              {text}
+            </a>
+          );
+        })}
     </div>
   );
 }

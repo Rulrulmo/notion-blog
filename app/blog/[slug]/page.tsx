@@ -6,8 +6,9 @@ import { GiscusComments } from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { PostNavigation } from './_components/PostNavigation';
 import NotionContent from './_components/NotionRenderer';
-import { TableOfContents } from './_components/TableOfContents';
 import { ViewCounter } from './_components/ViewCounter';
+import { MobileTableOfContents } from './_components/MobileTableOfContents';
+import { PcTableOfContents } from './_components/PcTableOfContents';
 
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts();
@@ -56,6 +57,9 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
 
           <Separator className="my-8" />
 
+          {/* 모바일용 목차 토글 버튼 */}
+          <MobileTableOfContents recordMap={post.recordMap} />
+
           {/* 블로그 본문 */}
           <NotionContent recordMap={post.recordMap} />
 
@@ -68,14 +72,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           <GiscusComments />
         </section>
         <aside className="hidden lg:block">
-          <div className="sticky top-[var(--sticky-top)]">
-            <div className="bg-muted/40 space-y-4 rounded-lg p-6 backdrop-blur-sm">
-              <h3 className="text-lg font-semibold">목차</h3>
-              <nav className="space-y-3 text-sm">
-                {post.recordMap?.block && <TableOfContents recordMap={post.recordMap} />}
-              </nav>
-            </div>
-          </div>
+          <PcTableOfContents recordMap={post.recordMap} />
         </aside>
       </div>
     </div>
