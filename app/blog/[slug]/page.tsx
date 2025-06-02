@@ -9,6 +9,7 @@ import NotionContent from './_components/NotionRenderer';
 import { ViewCounter } from './_components/ViewCounter';
 import { MobileTableOfContents } from './_components/MobileTableOfContents';
 import { PcTableOfContents } from './_components/PcTableOfContents';
+import { RelatedPosts } from './_components/RelatedPosts';
 
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts();
@@ -20,6 +21,7 @@ export const revalidate = 180;
 export default async function BlogPost({ params }: { params: Promise<{ slug: number }> }) {
   const { slug } = await params;
   const post = await getPostBySlug(Number(slug));
+  const { posts: allPosts } = await getPublishedPosts();
 
   if (!post) {
     notFound();
@@ -72,7 +74,10 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           <GiscusComments />
         </section>
         <aside className="hidden lg:block">
-          <PcTableOfContents recordMap={post.recordMap} />
+          <div className="space-y-8">
+            <PcTableOfContents recordMap={post.recordMap} />
+            <RelatedPosts currentPost={post} allPosts={allPosts} />
+          </div>
         </aside>
       </div>
     </div>
