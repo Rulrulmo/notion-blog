@@ -14,12 +14,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
       changeFrequency: 'daily',
@@ -29,12 +23,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const { posts } = await getPublishedPosts();
 
-  const blogPosts = posts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: post.modifiedDate ? new Date(post.modifiedDate) : new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
+  const blogPosts = posts.map((post) => {
+    // 최근 1주일 이내에 작성/수정된 포스트는 더 자주 크롤링
+    const isRecent = new Date(post.modifiedDate).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
 
-  return [...staticPages, ...blogPosts];
+    return {
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: post.modifiedDate ? new Date(post.modifiedDate) : new Date(),
+      changeFrequency: isRecent ? 'daily' : ('weekly' as const),
+      priority: isRecent ? 0.8 : 0.7,
+    };
+  });
+
+  return [...staticPages, ...blogPosts] as MetadataRoute.Sitemap;
 }
