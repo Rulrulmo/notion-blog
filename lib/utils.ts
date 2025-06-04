@@ -3,6 +3,8 @@ import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+const DEFAULT_COVER_IMAGE = '/images/default-cover.jpeg';
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -25,7 +27,7 @@ export const getMetadataFromPage = (page: PageObjectResponse): Post => {
   return {
     id: page.id,
     title: properties.제목.type === 'title' ? (properties.제목.title[0]?.plain_text ?? '') : '',
-    coverImage: getImageUrl(getCoverImage(page.cover), page.id),
+    coverImage: page.cover ? getImageUrl(getCoverImage(page.cover), page.id) : DEFAULT_COVER_IMAGE,
     tags: properties.tags.type === 'multi_select' ? properties.tags.multi_select : [],
     createdDate:
       properties.publishDate.type === 'date' ? (properties.publishDate.date?.start ?? '') : '',
@@ -57,6 +59,7 @@ export const getImageUrl = (notionCoverUrl: string, pageId: string) => {
 
 export const isValidImageUrl = (url: string) => {
   try {
+    if (url === DEFAULT_COVER_IMAGE) return true;
     new URL(url);
     return true;
   } catch {
