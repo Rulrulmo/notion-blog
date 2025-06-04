@@ -21,7 +21,7 @@ export function PostCard({ post, isFirst }: IProps) {
         <div className="relative aspect-[2/1] w-full overflow-hidden">
           <div className="from-background/20 absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
           <Image
-            src={post.coverImage}
+            src={post.coverImage || '/images/default-cover.jpeg'}
             alt={post.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
