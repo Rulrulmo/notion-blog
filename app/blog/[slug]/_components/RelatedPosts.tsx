@@ -18,16 +18,11 @@ export function RelatedPosts({ currentPost, allPosts }: RelatedPostsProps) {
   // 관련 포스트 찾기 (같은 태그를 가진 글들)
   const relatedPosts = allPosts
     .filter((post) => {
-      // 현재 포스트 제외
       if (post.slug === currentPost.slug) return false;
-
-      // 태그가 없는 포스트 제외
       if (!post.tags?.length) return false;
-
-      // 태그가 하나라도 일치하는 포스트 찾기
       return post.tags.some((tag) => currentTags.has(tag.name));
     })
-    .slice(0, 5); // 최대 5개까지만 표시
+    .slice(0, 5);
 
   if (relatedPosts.length === 0) {
     return null;
