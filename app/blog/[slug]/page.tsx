@@ -8,6 +8,7 @@ import { MobileTableOfContents } from './_components/MobileTableOfContents';
 import { PcTableOfContents } from './_components/PcTableOfContents';
 import { RelatedPosts } from './_components/RelatedPosts';
 import { PostHeader } from './_components/PostHeader';
+import { AdUnit } from '@/components/AdUnit';
 
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts();
@@ -28,7 +29,12 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
   return (
     <div className="container py-6 lg:py-12">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_minmax(0,1fr)_240px] lg:gap-8">
-        <aside className="hidden lg:block"></aside>
+        <aside className="hidden lg:block">
+          {/* 데스크탑 광고 */}
+          <div className="sticky top-[var(--sticky-top)] space-y-8">
+            <AdUnit slot="5007143515" layout="display" />
+          </div>
+        </aside>
         <section>
           <PostHeader
             title={post.title}
@@ -45,6 +51,11 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           <NotionContent recordMap={post.recordMap} />
           {/* 이전/다음 포스트 네비게이션 */}
           <PostNavigation post={post} />
+
+          {/* 모바일 광고 */}
+          <div className="my-8 lg:hidden">
+            <AdUnit slot="5007143515" layout="display" />
+          </div>
 
           <Separator className="my-16" />
 
