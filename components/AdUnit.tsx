@@ -22,33 +22,30 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
   useEffect(() => {
     if (process.env.NODE_ENV !== 'production') return;
 
-    const pushAd = () => {
-      try {
-        if (adRef.current && window.adsbygoogle) {
-          window.adsbygoogle.push({});
-        }
-      } catch (err) {
-        console.error('AdUnit 로드 실패:', err);
-      }
-    };
-
-    // 광고 컨테이너가 준비되었을 때 초기화
-    if (adRef.current) {
-      if (window.adsbygoogle) {
-        pushAd();
-      } else {
-        // adsbygoogle이 아직 로드되지 않은 경우 대기
-        const interval = setInterval(() => {
-          if (window.adsbygoogle) {
-            pushAd();
-            clearInterval(interval);
+    // ResizeObserver를 사용하여 컨테이너 크기 변화 감지
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0) {
+          try {
+            if (window.adsbygoogle) {
+              window.adsbygoogle.push({});
+            }
+          } catch (err) {
+            console.error('AdUnit 로드 실패:', err);
           }
-        }, 300);
-
-        // 5초 후에도 로드되지 않으면 인터벌 정리
-        setTimeout(() => clearInterval(interval), 5000);
+          // 크기가 확인되면 observer 해제
+          observer.disconnect();
+        }
       }
+    });
+
+    if (adRef.current) {
+      observer.observe(adRef.current);
     }
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -60,8 +57,8 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: layout === 'in-article' ? '250px' : '280px',
-          width: '100%',
+          width: layout === 'display' ? '200px' : '100%',
+          height: layout === 'display' ? '600px' : '250px',
           ...style,
         }}
       >
@@ -72,8 +69,8 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
 
   const adStyle: React.CSSProperties = {
     display: 'block',
-    minHeight: layout === 'in-article' ? '250px' : '280px',
-    width: '100%',
+    width: layout === 'display' ? '200px' : '100%',
+    height: layout === 'display' ? '600px' : '250px',
     backgroundColor: 'transparent',
     ...style,
   };
