@@ -32,7 +32,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
         <aside className="hidden lg:block">
           {/* 데스크탑 광고 */}
           <div className="sticky top-[var(--sticky-top)] space-y-8">
-            <div className="mx-auto">
+            <div className="mx-auto w-[200px]">
               <AdUnit slot="5007143515" layout="display" />
             </div>
           </div>
@@ -55,8 +55,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           <PostNavigation post={post} />
 
           {/* 모바일 광고 */}
-          <div className="my-8 lg:hidden">
-            <AdUnit slot="5007143515" layout="in-article" className="flex justify-center" />
+          <div className="my-8 w-full min-w-[250px] lg:hidden">
+            <AdUnit slot="5007143515" layout="in-article" />
           </div>
 
           <Separator className="my-16" />

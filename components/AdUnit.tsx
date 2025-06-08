@@ -32,21 +32,26 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
         // 이미 초기화된 광고는 건너뛰기
         if (adElement.getAttribute('data-adsbygoogle-status')) return;
 
-        if (window.adsbygoogle) {
-          window.adsbygoogle.push({});
+        // 컨테이너가 충분한 너비를 가지고 있는지 확인
+        const containerWidth = adRef.current.offsetWidth;
+        if (layout === 'in-article' && containerWidth < 250) {
+          console.warn('광고 컨테이너가 너무 좁습니다:', containerWidth);
+          return;
         }
+
+        window.adsbygoogle.push({});
       } catch (err) {
         console.error('AdUnit 초기화 실패:', err);
       }
     };
 
-    // DOM이 완전히 로드된 후 광고 초기화
-    const timeoutId = setTimeout(initAd, 100);
+    // DOM이 완전히 로드되고 레이아웃이 계산된 후 광고 초기화
+    const timeoutId = setTimeout(initAd, 1000);
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, []);
+  }, [layout]);
 
   if (process.env.NODE_ENV !== 'production') {
     return (
@@ -58,6 +63,7 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
           alignItems: 'center',
           justifyContent: 'center',
           width: layout === 'display' ? '200px' : '100%',
+          minWidth: layout === 'in-article' ? '250px' : 'auto',
           height: layout === 'display' ? '600px' : '250px',
           ...style,
         }}
@@ -70,13 +76,21 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
   const adStyle: React.CSSProperties = {
     display: 'block',
     width: layout === 'display' ? '200px' : '100%',
+    minWidth: layout === 'in-article' ? '250px' : 'auto',
     height: layout === 'display' ? '600px' : '250px',
     backgroundColor: 'transparent',
+    overflow: 'hidden',
     ...style,
   };
 
+  const containerStyle: React.CSSProperties = {
+    minWidth: layout === 'in-article' ? '250px' : 'auto',
+    width: '100%',
+    overflow: 'hidden',
+  };
+
   return (
-    <div ref={adRef} className={className}>
+    <div ref={adRef} className={className} style={containerStyle}>
       <ins
         className="adsbygoogle"
         style={adStyle}
