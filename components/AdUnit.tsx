@@ -9,6 +9,7 @@ interface AdUnitProps {
   layout?: 'in-article' | 'display';
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
   interface Window {
     adsbygoogle: any[];
@@ -20,8 +21,6 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
 
   useEffect(() => {
     if (process.env.NODE_ENV !== 'production') return;
-
-    let timeoutId: NodeJS.Timeout;
 
     const initAd = () => {
       if (!adRef.current) return;
@@ -42,10 +41,10 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
     };
 
     // DOM이 완전히 로드된 후 광고 초기화
-    timeoutId = setTimeout(initAd, 100);
+    const timeoutId = setTimeout(initAd, 100);
 
     return () => {
-      if (timeoutId) clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
     };
   }, []);
 
