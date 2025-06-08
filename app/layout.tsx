@@ -5,6 +5,7 @@ import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
 import Providers from './providers';
 import { GoogleAdSense } from '@/components/GoogleAdSense';
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -30,6 +31,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2091824784796567"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <div className="flex min-h-screen flex-col">
@@ -40,7 +48,6 @@ export default function RootLayout({
             {/* Footer 영역 */}
             <Footer />
           </div>
-          <GoogleAdSense />
         </Providers>
       </body>
     </html>

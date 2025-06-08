@@ -9,7 +9,6 @@ export function ViewCounter() {
   const queryClient = useQueryClient();
   const isDev = process.env.NODE_ENV === 'development';
   const pathname = usePathname();
-  console.log(pathname);
 
   const { data: viewData } = useQuery({
     queryKey: ['viewCount', pathname],
