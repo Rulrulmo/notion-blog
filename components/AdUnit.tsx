@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Script from 'next/script';
 
 interface AdUnitProps {
   slot: string;
@@ -30,16 +31,32 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
     return null;
   }
 
+  const defaultStyle: React.CSSProperties = {
+    display: 'block',
+    minHeight: layout === 'in-article' ? '250px' : '280px',
+    width: '100%',
+    backgroundColor: 'transparent',
+    ...style,
+  };
+
   return (
-    <div className={className}>
-      <ins
-        className="adsbygoogle"
-        style={style || { display: 'block' }}
-        data-ad-client="ca-pub-2091824784796567"
-        data-ad-slot={slot}
-        data-ad-format={layout === 'in-article' ? 'fluid' : 'auto'}
-        data-full-width-responsive="true"
+    <>
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2091824784796567"
+        strategy="afterInteractive"
+        crossOrigin="anonymous"
       />
-    </div>
+      <div className={className}>
+        <ins
+          className="adsbygoogle"
+          style={defaultStyle}
+          data-ad-client="ca-pub-2091824784796567"
+          data-ad-slot={slot}
+          data-ad-format={layout === 'in-article' ? 'fluid' : 'auto'}
+          data-full-width-responsive="true"
+        />
+      </div>
+    </>
   );
 }
