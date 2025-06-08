@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Script from 'next/script';
 
 interface AdUnitProps {
   slot: string;
@@ -22,29 +21,31 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
   useEffect(() => {
     if (process.env.NODE_ENV !== 'production') return;
 
-    // ResizeObserver를 사용하여 컨테이너 크기 변화 감지
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width > 0) {
-          try {
-            if (window.adsbygoogle) {
-              window.adsbygoogle.push({});
-            }
-          } catch (err) {
-            console.error('AdUnit 로드 실패:', err);
-          }
-          // 크기가 확인되면 observer 해제
-          observer.disconnect();
-        }
-      }
-    });
+    let timeoutId: NodeJS.Timeout;
 
-    if (adRef.current) {
-      observer.observe(adRef.current);
-    }
+    const initAd = () => {
+      if (!adRef.current) return;
+
+      try {
+        const adElement = adRef.current.querySelector('ins.adsbygoogle');
+        if (!adElement) return;
+
+        // 이미 초기화된 광고는 건너뛰기
+        if (adElement.getAttribute('data-adsbygoogle-status')) return;
+
+        if (window.adsbygoogle) {
+          window.adsbygoogle.push({});
+        }
+      } catch (err) {
+        console.error('AdUnit 초기화 실패:', err);
+      }
+    };
+
+    // DOM이 완전히 로드된 후 광고 초기화
+    timeoutId = setTimeout(initAd, 100);
 
     return () => {
-      observer.disconnect();
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, []);
 
@@ -76,23 +77,15 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
   };
 
   return (
-    <>
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2091824784796567"
-        strategy="afterInteractive"
-        crossOrigin="anonymous"
+    <div ref={adRef} className={className}>
+      <ins
+        className="adsbygoogle"
+        style={adStyle}
+        data-ad-client="ca-pub-2091824784796567"
+        data-ad-slot={slot}
+        data-ad-format={layout === 'in-article' ? 'fluid' : 'fixed'}
+        data-full-width-responsive={layout === 'in-article' ? 'true' : 'false'}
       />
-      <div ref={adRef} className={className}>
-        <ins
-          className="adsbygoogle"
-          style={adStyle}
-          data-ad-client="ca-pub-2091824784796567"
-          data-ad-slot={slot}
-          data-ad-format={layout === 'in-article' ? 'fluid' : 'auto'}
-          data-full-width-responsive="true"
-        />
-      </div>
-    </>
+    </div>
   );
 }
