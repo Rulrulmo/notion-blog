@@ -27,12 +27,12 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
   }
 
   return (
-    <div className="container py-6 lg:py-12">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_minmax(0,1fr)_240px] lg:gap-8">
-        <aside className="hidden lg:block">
+    <div className="container py-6 md:py-12">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[250px_minmax(0,1fr)_240px] md:gap-8">
+        <aside className="hidden md:block">
           {/* 데스크탑 광고 */}
           <div className="sticky top-[var(--sticky-top)] space-y-8">
-            <div className="mx-auto w-[200px]">
+            <div className="mx-auto w-[250px]">
               <AdUnit slot="5007143515" layout="display" />
             </div>
           </div>
@@ -55,7 +55,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           <PostNavigation post={post} />
 
           {/* 모바일 광고 */}
-          <div className="my-8 w-full min-w-[250px] lg:hidden">
+          <div className="my-8 w-full min-w-[250px] md:hidden">
             <AdUnit slot="5007143515" layout="in-article" />
           </div>
 
@@ -64,7 +64,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           {/* 댓글 */}
           <GiscusComments />
         </section>
-        <aside className="hidden lg:block">
+        <aside className="hidden md:block">
           <div className="space-y-8">
             <PcTableOfContents recordMap={post.recordMap} />
             <RelatedPosts currentPost={post} allPosts={allPosts} />

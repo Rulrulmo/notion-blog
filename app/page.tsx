@@ -16,12 +16,12 @@ export default async function Home({ searchParams }: IProps) {
   const { tags, totalCount } = await getTags();
   return (
     <div className="container max-w-full py-8">
-      <div className="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-[1fr_220px]">
-        <div className="order-3 w-full space-y-8 lg:order-none">
+      <div className="mx-auto grid grid-cols-1 gap-6 md:grid-cols-[1fr_220px]">
+        <div className="order-3 w-full space-y-8 md:order-none">
           <HeaderSection selectedTag={tag || '전체'} />
           <PostList tag={tag || 'all'} sort={sort || 'latest'} />
         </div>
-        <aside className="order-1 flex flex-col gap-6 lg:sticky lg:top-[var(--sticky-top)] lg:order-none lg:self-start">
+        <aside className="order-1 flex flex-col gap-6 md:sticky md:top-[var(--sticky-top)] md:order-none md:self-start">
           <ProfileSection />
           <TagSection tags={tags} selectedTag={tag || ''} totalCount={totalCount} />
         </aside>

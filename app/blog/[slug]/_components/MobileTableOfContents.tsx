@@ -14,7 +14,7 @@ export function MobileTableOfContents({ recordMap }: IProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return recordMap?.block ? (
-    <div className="sticky top-[var(--sticky-top)] z-10 mb-4 lg:hidden">
+    <div className="sticky top-[var(--sticky-top)] z-10 mb-4 md:hidden">
       <div className="mt-2">
         <div className="bg-muted/40 space-y-4 rounded-lg p-1 backdrop-blur-sm">
           <Button
