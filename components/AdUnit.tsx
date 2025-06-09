@@ -62,7 +62,7 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: layout === 'display' ? '200px' : '100%',
+          width: layout === 'display' ? '250px' : '100%',
           minWidth: layout === 'in-article' ? '250px' : 'auto',
           height: layout === 'display' ? '600px' : '250px',
           ...style,
@@ -75,7 +75,7 @@ export function AdUnit({ slot, style, className, layout = 'display' }: AdUnitPro
 
   const adStyle: React.CSSProperties = {
     display: 'block',
-    width: layout === 'display' ? '200px' : '100%',
+    width: layout === 'display' ? '250px' : '100%',
     minWidth: layout === 'in-article' ? '250px' : 'auto',
     height: layout === 'display' ? '600px' : '250px',
     backgroundColor: 'transparent',
