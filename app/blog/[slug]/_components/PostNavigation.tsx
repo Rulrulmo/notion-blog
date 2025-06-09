@@ -13,7 +13,7 @@ export function PostNavigation({ post }: IProps) {
       <div>
         {post.prevSlug && (
           <Link href={`/blog/${post.prevSlug}`}>
-            <Card className="group hover:bg-muted/50 transition-colors">
+            <Card className="group hover:bg-muted/50 max-w-[400px] transition-colors">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base font-medium">
                   <ChevronLeft className="h-4 w-4" />
@@ -29,7 +29,7 @@ export function PostNavigation({ post }: IProps) {
       <div>
         {post.nextSlug && (
           <Link href={`/blog/${post.nextSlug}`} className="text-right">
-            <Card className="group hover:bg-muted/50 transition-colors">
+            <Card className="group hover:bg-muted/50 max-w-[400px] transition-colors">
               <CardHeader>
                 <CardTitle className="flex items-center justify-end gap-2 text-base font-medium">
                   <span>다음 글</span>

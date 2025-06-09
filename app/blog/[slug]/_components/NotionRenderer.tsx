@@ -44,7 +44,6 @@ export default function NotionContent({ recordMap }: NotionContentProps) {
           Equation,
           Modal,
         }}
-        fullPage={false}
         darkMode={mounted ? resolvedTheme === 'dark' : false}
       />
     </div>
