@@ -5,6 +5,7 @@ import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
 import Providers from './providers';
 import Script from 'next/script';
+import { GoogleAdSense } from '@/components/GoogleAdSense';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -47,12 +48,7 @@ export default function RootLayout({
                 `,
               }}
             />
-            <Script
-              async
-              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-              strategy="beforeInteractive"
-              crossOrigin="anonymous"
-            />
+            <GoogleAdSense />
           </>
         )}
       </head>

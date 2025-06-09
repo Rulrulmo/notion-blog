@@ -8,7 +8,6 @@ import { MobileTableOfContents } from './_components/MobileTableOfContents';
 import { PcTableOfContents } from './_components/PcTableOfContents';
 import { RelatedPosts } from './_components/RelatedPosts';
 import { PostHeader } from './_components/PostHeader';
-import { AdUnit } from '@/components/AdUnit';
 
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts();
@@ -32,9 +31,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
         <aside className="hidden md:block">
           {/* 데스크탑 광고 */}
           <div className="sticky top-[var(--sticky-top)] space-y-8">
-            <div className="mx-auto w-[260px]">
-              <AdUnit slot="5007143515" layout="display" />
-            </div>
+            <div className="mx-auto w-[260px]"></div>
           </div>
         </aside>
         <section>
@@ -53,11 +50,6 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           <NotionContent recordMap={post.recordMap} />
           {/* 이전/다음 포스트 네비게이션 */}
           <PostNavigation post={post} />
-
-          {/* 모바일 광고 */}
-          <div className="my-8 w-full min-w-[250px] md:hidden">
-            <AdUnit slot="5007143515" layout="in-article" />
-          </div>
 
           <Separator className="my-16" />
 
