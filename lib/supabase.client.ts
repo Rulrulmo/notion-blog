@@ -1,6 +1,6 @@
 export const viewsApi = {
-  getViewCount: async (slug: string) => {
-    const response = await fetch(`/api/blog?slug=${slug}`);
+  getViewCount: async (pathname: string) => {
+    const response = await fetch(`/api/blog?pathname=${pathname}`);
     if (!response.ok) {
       throw new Error('Failed to fetch view count');
     }
