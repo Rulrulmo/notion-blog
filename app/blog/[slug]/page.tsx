@@ -8,7 +8,6 @@ import { MobileTableOfContents } from './_components/MobileTableOfContents';
 import { PcTableOfContents } from './_components/PcTableOfContents';
 import { RelatedPosts } from './_components/RelatedPosts';
 import { PostHeader } from './_components/PostHeader';
-import { PostAd } from './_components/PostAd';
 
 export const generateStaticParams = async () => {
   const { posts } = await getPublishedPosts();
@@ -29,11 +28,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
   return (
     <div className="container py-6 md:py-12">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[260px_minmax(0,1fr)_240px] md:gap-8">
-        <aside className="hidden md:block">
-          <div className="sticky top-[var(--sticky-top)] space-y-8">
-            <PostAd />
-          </div>
-        </aside>
+        <aside className="hidden md:block"></aside>
         <section>
           <PostHeader
             title={post.title}
