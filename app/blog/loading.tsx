@@ -3,17 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Loading() {
   return (
     <div className="container py-8">
-      <div className="grid grid-cols-[200px_1fr_220px] gap-6">
-        {/* 태그 목록 */}
-        <aside>
-          <div className="flex flex-col gap-4">
-            <Skeleton className="mb-2 h-6 w-20" /> {/* "태그 목록" 타이틀 */}
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-5 w-16" />
-            ))}
-          </div>
-        </aside>
-
+      <div className="grid grid-cols-[1fr_220px] gap-6">
         {/* 블로그 카드 목록 */}
         <div className="space-y-8">
           {/* 헤더 */}

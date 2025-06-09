@@ -27,8 +27,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
 
   return (
     <div className="container py-6 md:py-12">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[260px_minmax(0,1fr)_240px] md:gap-8">
-        <aside className="hidden md:block"></aside>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_240px] md:gap-8">
         <section>
           <PostHeader
             title={post.title}
