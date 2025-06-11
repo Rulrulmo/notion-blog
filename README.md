@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Notion Blog
 
-## Getting Started
+Notion을 CMS로 활용하는 개인 블로그 프로젝트입니다. Next.js 15와 React 19를 기반으로 구축되었으며, Notion API를 통해 콘텐츠를 관리합니다.
 
-First, run the development server:
+## 주요 기능
+
+- Notion을 CMS로 활용한 블로그 포스트 관리
+- MDX를 통한 마크다운 지원
+- 다크 모드 지원
+- 코드 하이라이팅
+- 반응형 디자인
+- 댓글 시스템 (Giscus)
+
+## 기술 스택
+
+- **프레임워크**: Next.js 15
+- **언어**: TypeScript
+- **스타일링**: Tailwind CSS
+- **상태 관리**: React Query
+- **폼 관리**: React Hook Form
+- **타입 검증**: Zod
+- **데이터베이스**: Supabase
+- **CMS**: Notion API
+
+## 시작하기
+
+### 필수 조건
+
+- Node.js 18.0.0 이상
+- pnpm (권장) 또는 npm
+- Notion API 키
+- Supabase 프로젝트 설정
+
+### 설치
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 저장소 클론
+git clone [repository-url]
+
+# 의존성 설치
+pnpm install
+
+# 환경 변수 설정
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`.env.local` 파일에 다음 환경 변수를 설정하세요:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+NOTION_API_KEY=your_notion_api_key
+NOTION_DATABASE_ID=your_database_id
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 개발 서버 실행
 
-## Learn More
+```bash
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+개발 서버는 [http://localhost:3001](http://localhost:3001)에서 실행됩니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 빌드
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm build
+```
 
-## Deploy on Vercel
+### 프로덕션 서버 실행
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm start
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 프로젝트 구조
+
+```
+├── app/              # Next.js 앱 라우터
+├── components/       # React 컴포넌트
+├── lib/             # 유틸리티 함수 및 설정
+├── public/          # 정적 파일
+├── types/           # TypeScript 타입 정의
+└── ...
+```
+
+## 스크립트
+
+- `pnpm dev`: 개발 서버 실행
+- `pnpm build`: 프로덕션 빌드
+- `pnpm start`: 프로덕션 서버 실행
+- `pnpm lint`: ESLint 실행
+- `pnpm lint:fix`: ESLint 자동 수정
+- `pnpm format`: Prettier 포맷팅
+
+## 라이선스
+
+MIT
