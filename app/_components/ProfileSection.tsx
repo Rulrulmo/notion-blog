@@ -34,7 +34,7 @@ export default function ProfileSection() {
 
           <div className="text-center">
             <h3 className="text-lg font-bold">룰모</h3>
-            <p className="text-primary text-sm">FE 개발자</p>
+            <p className="text-primary text-sm">고양이 키우는 개발자</p>
           </div>
           <div className="flex flex-row justify-center gap-2">
             {socialLinks.map((item, index) => (
