@@ -50,6 +50,7 @@ export function TableOfContents({
         .map((header) => {
           const level = getHeaderLevel(header.value.type);
           const text = header.value.properties?.title?.[0]?.[0] || '';
+          const cleanText = text.replace(/[\p{Emoji}]/gu, '').trim();
           const id = header.value.id;
           const cleanId = id.replace(/-/g, '');
 
@@ -61,7 +62,7 @@ export function TableOfContents({
               className="text-muted-foreground hover:text-foreground block transition-colors"
               style={{ paddingLeft: `${(level - 1) * 1}rem` }}
             >
-              {text}
+              {cleanText}
             </a>
           );
         })}
