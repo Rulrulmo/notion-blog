@@ -50,7 +50,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: num
           {/* 댓글 */}
           <GiscusComments />
         </section>
-        <aside className="hidden md:block">
+        <aside className="hidden md:sticky md:top-[var(--sticky-top)] md:block md:self-start">
           <div className="space-y-8">
             <PcTableOfContents recordMap={post.recordMap} />
             <RelatedPosts currentPost={post} allPosts={allPosts} />
