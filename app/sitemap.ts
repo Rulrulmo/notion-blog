@@ -13,12 +13,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 1,
     },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
   ] as const;
 
   const { posts } = await getPublishedPosts();
@@ -31,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: post.modifiedDate ? new Date(post.modifiedDate) : new Date(),
       changeFrequency: isRecent ? 'daily' : ('weekly' as const),
-      priority: isRecent ? 0.8 : 0.7,
+      priority: isRecent ? 0.9 : 0.8,
     };
   });
 
