@@ -1,5 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User } from 'lucide-react';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 import { ViewCounter } from './ViewCounter';
 
 interface PostHeaderProps {
@@ -27,10 +29,14 @@ export function PostHeader({ title, tags, author, createdDate }: PostHeaderProps
           <User className="h-4 w-4" />
           <span>{author}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <CalendarDays className="h-4 w-4" />
-          <span>{createdDate}</span>
-        </div>
+        {createdDate && (
+          <div className="flex items-center gap-1">
+            <CalendarDays className="h-4 w-4" />
+            <time dateTime={createdDate}>
+              {format(new Date(createdDate), 'PPP', { locale: ko })}
+            </time>
+          </div>
+        )}
         <ViewCounter />
       </div>
     </div>

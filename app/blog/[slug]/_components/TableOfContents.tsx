@@ -38,34 +38,31 @@ export function TableOfContents({
     }
   };
 
+  // onlyHeaders면 H2만 보여주되, H2가 없는 글은 전체 소제목을 보여준다
+  const subHeaders = headers.filter((header) => header.type === 'sub_header');
+  const visibleHeaders = onlyHeaders && subHeaders.length ? subHeaders : headers;
+
   return (
     <div className="space-y-2">
-      {headers
-        .filter((header) => {
-          if (onlyHeaders) {
-            return header.type === 'sub_header';
-          }
-          return true;
-        })
-        .map((header) => {
-          const level = getHeaderLevel(header.type);
-          const text = header.properties?.title?.[0]?.[0] || '';
-          const cleanText = text.replace(/[\p{Emoji}]/gu, '').trim();
-          const id = header.id;
-          const cleanId = id.replace(/-/g, '');
+      {visibleHeaders.map((header) => {
+        const level = getHeaderLevel(header.type);
+        const text = header.properties?.title?.[0]?.[0] || '';
+        const cleanText = text.replace(/[\p{Emoji}]/gu, '').trim();
+        const id = header.id;
+        const cleanId = id.replace(/-/g, '');
 
-          return (
-            <a
-              key={id}
-              href={`#${cleanId}`}
-              onClick={(e) => handleClick(e, id)}
-              className="text-muted-foreground hover:text-foreground block transition-colors"
-              style={{ paddingLeft: `${(level - 1) * 1}rem` }}
-            >
-              {cleanText}
-            </a>
-          );
-        })}
+        return (
+          <a
+            key={id}
+            href={`#${cleanId}`}
+            onClick={(e) => handleClick(e, id)}
+            className="text-muted-foreground hover:text-foreground block transition-colors"
+            style={{ paddingLeft: `${(level - 1) * 1}rem` }}
+          >
+            {cleanText}
+          </a>
+        );
+      })}
     </div>
   );
 }
