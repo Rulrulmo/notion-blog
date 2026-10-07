@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
-import Providers from './providers';
+import { ThemeProvider } from 'next-themes';
 import Script from 'next/script';
 import { GoogleAdSense } from '@/components/GoogleAdSense';
 
@@ -53,7 +53,7 @@ export default function RootLayout({
         )}
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="flex min-h-screen flex-col">
             {/* Header 영역 */}
             <Header />
@@ -62,7 +62,7 @@ export default function RootLayout({
             {/* Footer 영역 */}
             <Footer />
           </div>
-        </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
