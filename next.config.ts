@@ -18,11 +18,10 @@ const nextConfig: NextConfig = {
       {
         hostname: 'www.notion.so',
       },
-      {
-        hostname:
-          process.env.NEXT_PUBLIC_NOTION_SITE_URL?.replace('https://', '').replace('http://', '') ||
-          '',
-      },
+      // 빈 hostname은 Next 16 빌드에서 에러가 나므로 env가 있을 때만 추가
+      ...(process.env.NEXT_PUBLIC_NOTION_SITE_URL
+        ? [{ hostname: new URL(process.env.NEXT_PUBLIC_NOTION_SITE_URL).hostname }]
+        : []),
     ],
   },
 };
