@@ -1,6 +1,7 @@
 'use client';
 
-import { ExtendedRecordMap } from 'notion-types';
+import { Block, ExtendedRecordMap } from 'notion-types';
+import { getBlockValue } from 'notion-utils';
 
 export function TableOfContents({
   recordMap,
@@ -9,13 +10,12 @@ export function TableOfContents({
   recordMap: ExtendedRecordMap;
   onlyHeaders?: boolean;
 }) {
-  const blocks = Object.values(recordMap.block);
-  const headers = blocks.filter((block) => {
-    const value = block.value;
-    return (
-      value?.type === 'header' || value?.type === 'sub_header' || value?.type === 'sub_sub_header'
+  const headers = Object.values(recordMap.block)
+    .map((block) => getBlockValue(block.value))
+    .filter(
+      (block): block is Block =>
+        block?.type === 'header' || block?.type === 'sub_header' || block?.type === 'sub_sub_header'
     );
-  });
 
   const getHeaderLevel = (type: string) => {
     switch (type) {
@@ -43,15 +43,15 @@ export function TableOfContents({
       {headers
         .filter((header) => {
           if (onlyHeaders) {
-            return header.value.type === 'sub_header';
+            return header.type === 'sub_header';
           }
           return true;
         })
         .map((header) => {
-          const level = getHeaderLevel(header.value.type);
-          const text = header.value.properties?.title?.[0]?.[0] || '';
+          const level = getHeaderLevel(header.type);
+          const text = header.properties?.title?.[0]?.[0] || '';
           const cleanText = text.replace(/[\p{Emoji}]/gu, '').trim();
-          const id = header.value.id;
+          const id = header.id;
           const cleanId = id.replace(/-/g, '');
 
           return (
