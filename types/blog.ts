@@ -1,5 +1,3 @@
-import { ExtendedRecordMap } from 'notion-types';
-
 export interface TagFilterItem {
   id: string;
   name: string;
@@ -22,9 +20,4 @@ export interface Post {
   modifiedDate: string;
   author: string;
   slug?: number;
-  prevSlug?: number;
-  nextSlug?: number;
-  prevPostTitle?: string;
-  nextPostTitle?: string;
-  recordMap?: ExtendedRecordMap;
 }

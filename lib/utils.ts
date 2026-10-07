@@ -40,16 +40,7 @@ export const getMetadataFromPage = (page: PageObjectResponse): Post => {
       properties.slug.type === 'unique_id'
         ? properties.slug.unique_id.number || undefined
         : undefined,
-    prevSlug:
-      properties.prevSlug.type === 'number' ? properties.prevSlug.number || undefined : undefined,
-    nextSlug:
-      properties.nextSlug.type === 'number' ? properties.nextSlug.number || undefined : undefined,
   };
-};
-
-export const checkUUID = (id: string) => {
-  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  return UUID_REGEX.test(id);
 };
 
 export const getImageUrl = (notionCoverUrl: string, pageId: string) => {
