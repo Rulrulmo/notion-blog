@@ -17,8 +17,14 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const siteName = process.env.NODE_ENV === 'development' ? 'Rulmo(dev)' : 'Rulmo 블로그';
+
 export const metadata: Metadata = {
-  title: process.env.NODE_ENV === 'development' ? 'Rulmo(dev)' : 'Rulmo 블로그',
+  metadataBase: process.env.NEXT_PUBLIC_URL ? new URL(process.env.NEXT_PUBLIC_URL) : undefined,
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
+  },
   description: 'FE 개발자 블로그',
   verification: {
     google: 'gTJyk0_O9B8dcbw_uZrVqxDfLXPEx4gPXTM9vnhHOpg',
@@ -31,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="scroll-smooth">
+    <html lang="ko" suppressHydrationWarning className="scroll-smooth">
       <head>
         {process.env.NODE_ENV === 'production' && (
           <>
