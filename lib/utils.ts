@@ -40,6 +40,7 @@ export const getMetadataFromPage = (page: PageObjectResponse): Post => {
       properties.slug.type === 'unique_id'
         ? properties.slug.unique_id.number || undefined
         : undefined,
+    featured: properties.featured?.type === 'checkbox' && properties.featured.checkbox,
   };
 };
 

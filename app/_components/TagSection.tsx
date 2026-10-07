@@ -34,6 +34,34 @@ export default function TagSection({ tags, selectedTag, totalCount }: IProps) {
   );
 }
 
+// 모바일용: 가로 스크롤 태그 칩
+export function TagBar({ tags, selectedTag, totalCount }: IProps) {
+  const items = [{ id: '', name: '전체', count: totalCount }, ...tags];
+
+  return (
+    <nav aria-label="태그" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+      {items.map((tag) => {
+        const isAll = tag.id === '';
+        const isSelected = isAll ? selectedTag === '' : selectedTag === tag.name;
+
+        return (
+          <Link
+            key={tag.name}
+            href={isAll ? '/' : `/?tag=${encodeURIComponent(tag.name)}`}
+            className={`shrink-0 rounded-full border px-3 py-1 text-sm transition-colors ${
+              isSelected
+                ? 'border-primary bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            {tag.name} <span className="text-xs opacity-70">{tag.count}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 const TagItem = ({
   tag,
   selectedTag,

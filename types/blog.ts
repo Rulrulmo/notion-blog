@@ -20,4 +20,5 @@ export interface Post {
   modifiedDate: string;
   author: string;
   slug?: number;
+  featured: boolean;
 }
