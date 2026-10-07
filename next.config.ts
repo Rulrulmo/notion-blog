@@ -1,12 +1,6 @@
 import type { NextConfig } from 'next';
-import createMDX from '@next/mdx';
-
-const withMDX = createMDX({
-  //
-});
 
 const nextConfig: NextConfig = {
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   images: {
     remotePatterns: [
       {
@@ -30,23 +24,7 @@ const nextConfig: NextConfig = {
           '',
       },
     ],
-    // unoptimized: true,
-  },
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'header',
-            key: 'x-prerender',
-          },
-        ],
-        destination: '/:path*',
-        permanent: true,
-      },
-    ];
   },
 };
 
-export default withMDX(nextConfig);
+export default nextConfig;
