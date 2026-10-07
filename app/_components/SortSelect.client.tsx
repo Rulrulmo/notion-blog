@@ -22,7 +22,7 @@ export default function SortSelect() {
 
   return (
     <Select value={sort} onValueChange={handleSort}>
-      <SelectTrigger>
+      <SelectTrigger aria-label="정렬 방식">
         <SelectValue placeholder="정렬 방식 선택" />
       </SelectTrigger>
       <SelectContent>

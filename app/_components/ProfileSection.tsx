@@ -5,10 +5,12 @@ import { Github, Mail } from 'lucide-react';
 const socialLinks = [
   {
     icon: Github,
+    label: 'GitHub',
     href: 'https://github.com/rulrulmo',
   },
   {
     icon: Mail,
+    label: '이메일',
     href: 'mailto:hwan901014@gmail.com',
   },
 ];
@@ -39,7 +41,12 @@ export default function ProfileSection() {
           <div className="flex flex-row justify-center gap-2">
             {socialLinks.map((item, index) => (
               <Button key={index} variant="ghost" className="bg-primary/10" size="icon" asChild>
-                <a href={item.href} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={item.label}
+                >
                   <item.icon className="h-4 w-4" />
                 </a>
               </Button>
