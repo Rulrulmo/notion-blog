@@ -14,6 +14,7 @@ Notion을 CMS로 쓰는 개인 기술 블로그입니다. Notion에 글을 쓰�
 ## 주요 기능
 
 - Notion DB 기반 글 관리, 3분 주기 ISR로 자동 반영
+- 대표 글 노출 (Notion 체크박스로 지정)
 - 태그 필터, 최신순/오래된순 정렬
 - 목차(PC 사이드바, 모바일 토글), 이전/다음 글, 같은 태그의 관련 글
 - 다크 모드
@@ -89,6 +90,7 @@ lib/notion.ts                # Notion 데이터 접근
 | `tags`        | Multi-select | 태그                       |
 | `author`      | Created by   | 작성자                     |
 | `slug`        | ID           | URL(`/blog/{slug}`)에 사용 |
+| `featured`    | Checkbox     | 홈 상단 대표 글에 노출     |
 
 ### Supabase RPC
 
