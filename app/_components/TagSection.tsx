@@ -1,4 +1,3 @@
-'use client';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { TagFilterItem } from '@/types/blog';
 import Link from 'next/link';
@@ -17,7 +16,7 @@ export default function TagSection({ tags, selectedTag, totalCount }: IProps) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-1">
-          <Link href={`/?tag=`} className="block">
+          <Link href="/" className="block">
             <TagItem
               tag={{ id: '', name: '전체', count: totalCount }}
               selectedTag={selectedTag}
@@ -25,7 +24,7 @@ export default function TagSection({ tags, selectedTag, totalCount }: IProps) {
             />
           </Link>
           {tags?.map((tag: TagFilterItem) => (
-            <Link href={`/?tag=${tag.name}`} key={tag.name} className="block">
+            <Link href={`/?tag=${encodeURIComponent(tag.name)}`} key={tag.name} className="block">
               <TagItem tag={tag} selectedTag={selectedTag} />
             </Link>
           ))}
@@ -48,7 +47,7 @@ const TagItem = ({
     <div
       className={`hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors ${
         selectedTag === tag.name || (isAll && selectedTag === '')
-          ? 'bg-muted-foreground/10 font-bold text-black'
+          ? 'bg-muted-foreground/10 text-foreground font-bold'
           : ''
       }`}
     >

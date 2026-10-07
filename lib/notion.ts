@@ -11,218 +11,63 @@ export const notion = new Client({
 
 const notionApi = new NotionAPI();
 
-export interface IGetPublishedPosts {
-  pageSize?: number;
-  startCursor?: string;
-  tag?: string;
-  sort?: 'latest' | 'oldest';
-}
-
-export interface IGetPublishedPostsResponse {
-  posts: Post[];
-  hasMore: boolean;
-  nextCursor: string;
-}
-
+// 발행된 글 전체 (최신순). 목록, 태그, 상세, 이전/다음 글이 모두 이 결과를 공유한다.
 export const getPublishedPosts = unstable_cache(
-  async ({
-    startCursor,
-    tag,
-    sort,
-  }: IGetPublishedPosts = {}): Promise<IGetPublishedPostsResponse> => {
-    const filters: any[] = [
-      {
-        property: 'status',
-        select: {
-          equals: 'Published',
-        },
-      },
-    ];
+  async (): Promise<Post[]> => {
+    const posts: Post[] = [];
+    let cursor: string | undefined;
 
-    if (tag && tag !== 'all') {
-      filters.push({
-        property: 'tags',
-        multi_select: {
-          contains: tag,
+    do {
+      const response = await notion.databases.query({
+        database_id: process.env.NOTION_DATABASE_ID!,
+        filter: {
+          property: 'status',
+          select: {
+            equals: 'Published',
+          },
         },
+        sorts: [
+          {
+            property: 'publishDate',
+            direction: 'descending',
+          },
+        ],
+        page_size: 100,
+        start_cursor: cursor,
       });
-    }
 
-    const response = await notion.databases.query({
-      database_id: process.env.NOTION_DATABASE_ID!,
-      filter: {
-        and: filters,
-      },
-      sorts: [
-        {
-          property: 'publishDate',
-          direction: sort === 'oldest' ? 'ascending' : 'descending',
-        },
-      ],
-      page_size: 100,
-      start_cursor: startCursor,
-    });
+      posts.push(
+        ...response.results
+          .filter((page): page is PageObjectResponse => 'properties' in page)
+          .map(getMetadataFromPage)
+      );
+      cursor = response.next_cursor ?? undefined;
+    } while (cursor);
 
-    const posts = response.results
-      .filter((page): page is PageObjectResponse => 'properties' in page)
-      .map(getMetadataFromPage);
-
-    return {
-      posts,
-      hasMore: response.has_more,
-      nextCursor: response.next_cursor || '',
-    };
+    return posts;
   },
-  undefined,
+  ['published-posts'],
   {
+    revalidate: 180,
     tags: ['posts'],
   }
 );
 
-export const getTags = async (): Promise<{
-  tags: TagFilterItem[];
-  totalCount: number;
-}> => {
-  const { posts } = await getPublishedPosts();
-  const tagSet = new Set<string>();
-  const tagCount: Record<string, number> = {};
+export const getTags = (posts: Post[]): TagFilterItem[] => {
+  const tagCount = new Map<string, number>();
 
   posts.forEach((post) => {
-    const postTags = new Set(post.tags?.map((tag) => tag.name) || []);
-    postTags.forEach((tagName) => {
-      tagSet.add(tagName);
-      tagCount[tagName] = (tagCount[tagName] || 0) + 1;
+    post.tags.forEach((tag) => {
+      tagCount.set(tag.name, (tagCount.get(tag.name) ?? 0) + 1);
     });
   });
 
-  return {
-    tags: Array.from(tagSet).map((tagName) => ({
-      id: tagName,
-      name: tagName,
-      count: tagCount[tagName] || 0,
-    })),
-    totalCount: posts.length,
-  };
+  return Array.from(tagCount, ([name, count]) => ({ id: name, name, count }));
 };
 
-export const getPostBySlug = async (slug: number): Promise<Post> => {
-  const response = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID!,
-    filter: {
-      or: [
-        {
-          property: 'slug',
-          number: {
-            equals: slug,
-          },
-        },
-        {
-          property: 'nextSlug',
-          number: {
-            equals: slug,
-          },
-        },
-        {
-          property: 'prevSlug',
-          number: {
-            equals: slug,
-          },
-        },
-      ],
-    },
-  });
-
-  if (!response.results.length) {
-    throw new Error('Post not found');
-  }
-
-  const currentPost = response.results.find((page) => {
-    const prop = (page as PageObjectResponse).properties.slug;
-    return prop.type === 'unique_id' && prop.unique_id.number === slug;
-  }) as PageObjectResponse;
-
-  const prevPost = response.results.find((page) => {
-    const prop = (page as PageObjectResponse).properties.nextSlug;
-    return prop.type === 'number' && prop.number === slug;
-  }) as PageObjectResponse;
-
-  const nextPost = response.results.find((page) => {
-    const prop = (page as PageObjectResponse).properties.prevSlug;
-    return prop.type === 'number' && prop.number === slug;
-  }) as PageObjectResponse;
-
-  if (!currentPost) {
-    throw new Error('Post not found');
-  }
-
-  const metadata = getMetadataFromPage(currentPost);
-  const recordMap = await notionApi.getPage(currentPost.id);
-
-  const prevPostTitle = prevPost
-    ? prevPost.properties.제목.type === 'title'
-      ? (prevPost.properties.제목.title[0]?.plain_text ?? '')
-      : ''
-    : '';
-
-  const nextPostTitle = nextPost
-    ? nextPost.properties.제목.type === 'title'
-      ? (nextPost.properties.제목.title[0]?.plain_text ?? '')
-      : ''
-    : '';
-
-  return {
-    ...metadata,
-    recordMap,
-    prevPostTitle,
-    nextPostTitle,
-  };
+export const getPostBySlug = async (slug: number) => {
+  const posts = await getPublishedPosts();
+  return posts.find((post) => post.slug === slug);
 };
 
-export interface CreatePostParams {
-  title: string;
-  tag: string;
-  content: string;
-}
-
-export const createPost = async ({ title, tag, content }: CreatePostParams) => {
-  const response = await notion.pages.create({
-    parent: {
-      database_id: process.env.NOTION_DATABASE_ID!,
-    },
-    properties: {
-      Title: {
-        title: [
-          {
-            text: {
-              content: title,
-            },
-          },
-        ],
-      },
-      Description: {
-        rich_text: [
-          {
-            text: {
-              content: content,
-            },
-          },
-        ],
-      },
-      Tags: {
-        multi_select: [{ name: tag }],
-      },
-      Status: {
-        select: {
-          name: 'Published',
-        },
-      },
-      Date: {
-        date: {
-          start: new Date().toISOString(),
-        },
-      },
-    },
-  });
-
-  return response;
-};
+export const getPostContent = (pageId: string) => notionApi.getPage(pageId);

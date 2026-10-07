@@ -1,6 +1,7 @@
 'use client';
 
-import { ExtendedRecordMap } from 'notion-types';
+import { Block, ExtendedRecordMap } from 'notion-types';
+import { getBlockValue } from 'notion-utils';
 
 export function TableOfContents({
   recordMap,
@@ -9,13 +10,12 @@ export function TableOfContents({
   recordMap: ExtendedRecordMap;
   onlyHeaders?: boolean;
 }) {
-  const blocks = Object.values(recordMap.block);
-  const headers = blocks.filter((block) => {
-    const value = block.value;
-    return (
-      value?.type === 'header' || value?.type === 'sub_header' || value?.type === 'sub_sub_header'
+  const headers = Object.values(recordMap.block)
+    .map((block) => getBlockValue(block.value))
+    .filter(
+      (block): block is Block =>
+        block?.type === 'header' || block?.type === 'sub_header' || block?.type === 'sub_sub_header'
     );
-  });
 
   const getHeaderLevel = (type: string) => {
     switch (type) {
@@ -38,34 +38,31 @@ export function TableOfContents({
     }
   };
 
+  // onlyHeaders면 H2만 보여주되, H2가 없는 글은 전체 소제목을 보여준다
+  const subHeaders = headers.filter((header) => header.type === 'sub_header');
+  const visibleHeaders = onlyHeaders && subHeaders.length ? subHeaders : headers;
+
   return (
     <div className="space-y-2">
-      {headers
-        .filter((header) => {
-          if (onlyHeaders) {
-            return header.value.type === 'sub_header';
-          }
-          return true;
-        })
-        .map((header) => {
-          const level = getHeaderLevel(header.value.type);
-          const text = header.value.properties?.title?.[0]?.[0] || '';
-          const cleanText = text.replace(/[\p{Emoji}]/gu, '').trim();
-          const id = header.value.id;
-          const cleanId = id.replace(/-/g, '');
+      {visibleHeaders.map((header) => {
+        const level = getHeaderLevel(header.type);
+        const text = header.properties?.title?.[0]?.[0] || '';
+        const cleanText = text.replace(/[\p{Emoji}]/gu, '').trim();
+        const id = header.id;
+        const cleanId = id.replace(/-/g, '');
 
-          return (
-            <a
-              key={id}
-              href={`#${cleanId}`}
-              onClick={(e) => handleClick(e, id)}
-              className="text-muted-foreground hover:text-foreground block transition-colors"
-              style={{ paddingLeft: `${(level - 1) * 1}rem` }}
-            >
-              {cleanText}
-            </a>
-          );
-        })}
+        return (
+          <a
+            key={id}
+            href={`#${cleanId}`}
+            onClick={(e) => handleClick(e, id)}
+            className="text-muted-foreground hover:text-foreground block transition-colors"
+            style={{ paddingLeft: `${(level - 1) * 1}rem` }}
+          >
+            {cleanText}
+          </a>
+        );
+      })}
     </div>
   );
 }

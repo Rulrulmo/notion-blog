@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ] as const;
 
-  const { posts } = await getPublishedPosts();
+  const posts = await getPublishedPosts();
 
   const blogPosts = posts.map((post) => {
     // 최근 1주일 이내에 작성/수정된 포스트는 더 자주 크롤링

@@ -11,10 +11,12 @@ export const size = {
 export const contentType = 'image/png';
 
 // OG 이미지 생성 함수
-export default async function OgImage({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(Number(params.slug));
+export default async function OgImage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getPostBySlug(Number(slug));
 
-  if (!post || !post.coverImage) {
+  // 기본 커버는 상대 경로라 ImageResponse가 불러올 수 없음
+  if (!post?.coverImage.startsWith('http')) {
     return new ImageResponse(
       (
         <div
@@ -30,7 +32,7 @@ export default async function OgImage({ params }: { params: { slug: string } }) 
             fontWeight: 'bold',
           }}
         >
-          No Image Available
+          Rulmo Blog
         </div>
       ),
       {

@@ -21,7 +21,7 @@ export default function SortSelect() {
   };
 
   return (
-    <Select defaultValue={sort} onValueChange={handleSort}>
+    <Select value={sort} onValueChange={handleSort}>
       <SelectTrigger>
         <SelectValue placeholder="정렬 방식 선택" />
       </SelectTrigger>

@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -45,8 +44,8 @@
 
 :root {
   --radius: 0.625rem;
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(222.2 84% 4.9%);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -83,8 +82,8 @@
 }
 
 .dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 0 0% 100%;
+  --background: hsl(222.2 84% 4.9%);
+  --foreground: hsl(0 0% 100%);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
@@ -121,7 +120,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+    @apply bg-background text-foreground;
   }
 }
 

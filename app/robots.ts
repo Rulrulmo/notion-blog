@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: 'https://rulmo.vercel.app/sitemap.xml',
+    sitemap: `${process.env.NEXT_PUBLIC_URL}/sitemap.xml`,
   };
 }
