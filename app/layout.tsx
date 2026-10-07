@@ -4,7 +4,6 @@ import './globals.css';
 import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
 import { ThemeProvider } from 'next-themes';
-import Script from 'next/script';
 import { GoogleAdSense } from '@/components/GoogleAdSense';
 
 const geistSans = Geist({
@@ -39,24 +38,7 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning className="scroll-smooth">
       <head>
-        {process.env.NODE_ENV === 'production' && (
-          <>
-            <Script
-              id="adsbygoogle-init"
-              strategy="beforeInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.adsbygoogle = window.adsbygoogle || [];
-                  (adsbygoogle = window.adsbygoogle || []).push({
-                    google_ad_client: "ca-pub-2091824784796567",
-                    enable_page_level_ads: true
-                  });
-                `,
-              }}
-            />
-            <GoogleAdSense />
-          </>
-        )}
+        <GoogleAdSense />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
